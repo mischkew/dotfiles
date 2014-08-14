@@ -9,7 +9,7 @@ dotfiles:
 
 .PHONY: packages
 packages:
-	apt-get install dkms build-essentials linux-headers-$(uname -r) git python2.7 python-pip
+	apt-get install dkms build-essentials linux-headers-$(uname -r) python2.7 python-pip
 
 .PHONY: allclean
 allclean:
