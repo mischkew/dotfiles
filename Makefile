@@ -25,6 +25,13 @@ virtualbox: packages
 sshserver: 
 	apt-get install openssh-server
 	
+.PHONY: virtualenv
+virtualenv:
+	python pip install virtualenvwrapper && /
+	source /usr/local/bin/virtualenvwrapper.sh && /
+	export WORKON_HOME /home/$(user)/.virtualenvs && /
+	mkvirtualenv main
+
 .PHONY: clean
 clean:
 	# nothing to clean yet
