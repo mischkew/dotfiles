@@ -1,5 +1,7 @@
 # https://github.com/elemoine/dotfiles/blob/master/Makefile
 
+kernel = $(shell uname -r)
+
 .PHONY: all
 all: dotfiles virtualbox sshserver
 
@@ -9,7 +11,7 @@ dotfiles:
 
 .PHONY: packages
 packages:
-	apt-get install dkms build-essential linux-headers-$(uname -r) python2.7 python-pip svn git
+	apt-get install dkms build-essential linux-headers-$(kernel) python2.7 python-pip subversion git
 
 .PHONY: virtualbox
 virtualbox: packages
