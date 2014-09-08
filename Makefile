@@ -1,6 +1,7 @@
 # https://github.com/elemoine/dotfiles/blob/master/Makefile
 
 kernel = $(shell uname -r)
+user = $(shell whoami)
 
 .PHONY: all
 all: dotfiles virtualbox sshserver
@@ -18,7 +19,7 @@ virtualbox: packages
 	# setup vbox shared folders
 	apt-get install --no-install-recommends virtualbox-guest-utils
 	apt-get install virtualbox-guest-dkms
-	adduser $(whoami) vboxsf
+	adduser $(user) vboxsf
 
 .PHONY: sshserver
 sshserver: 
