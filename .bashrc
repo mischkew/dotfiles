@@ -26,6 +26,8 @@ alias l='ls -la'
 
 # prepare virtualenv
 export WORKON_HOME ${HOME}/.virtualenvs
+source /usr/local/bin/virtualenvwrapper_lazy.sh
+workon main
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
