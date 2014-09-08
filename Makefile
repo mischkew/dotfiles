@@ -4,7 +4,7 @@ kernel = $(shell uname -r)
 user = $(shell whoami)
 
 .PHONY: all
-all: dotfiles virtualbox sshserver virtualenvwrapper
+all: dotfiles virtualbox sshserver virtualenv
 
 .PHONY: dotfiles
 dotfiles:
