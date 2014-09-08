@@ -16,6 +16,9 @@ HISTFILESIZE=2000
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+# add local bins to path
+PATH=/usr/local/bin:${PATH}
+
 # alias
 alias g='git'
 alias ls='ls --color=auto'
