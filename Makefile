@@ -27,10 +27,8 @@ sshserver:
 	
 .PHONY: virtualenv
 virtualenv:
-	python pip install virtualenvwrapper && /
-	source /usr/local/bin/virtualenvwrapper.sh && /
-	export WORKON_HOME /home/$(user)/.virtualenvs && /
-	mkvirtualenv main
+	pip install virtualenvwrapper && /
+	@install-virtualenv.sh
 
 .PHONY: clean
 clean:
