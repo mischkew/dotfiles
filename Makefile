@@ -1,7 +1,7 @@
 # https://github.com/elemoine/dotfiles/blob/master/Makefile
 
 .PHONY: all
-all: dotfiles
+all: dotfiles virtualbox sshserver
 
 .PHONY: dotfiles
 dotfiles:
@@ -9,7 +9,7 @@ dotfiles:
 
 .PHONY: packages
 packages:
-	apt-get install dkms build-essential linux-headers-$(uname -r) python2.7 python-pip
+	apt-get install dkms build-essential linux-headers-$(uname -r) python2.7 python-pip svn git
 
 .PHONY: virtualbox
 virtualbox: packages
@@ -22,6 +22,6 @@ virtualbox: packages
 sshserver: 
 	apt-get install openssh-server
 	
-.PHONY: allclean
-allclean:
+.PHONY: clean
+clean:
 	# nothing to clean yet
