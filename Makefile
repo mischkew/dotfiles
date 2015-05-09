@@ -22,13 +22,18 @@ virtualbox: packages
 	adduser $(user) vboxsf
 
 .PHONY: sshserver
-sshserver: 
+sshserver:
 	apt-get install openssh-server
-	
+
 .PHONY: virtualenv
 virtualenv:
 	pip install virtualenvwrapper && /
 	@install-virtualenv.sh
+
+.PHONY: z-script
+z-script:
+	git clone https://github.com/rupa/z.git
+	echo "source z-source.sh" >> .bashrc
 
 .PHONY: clean
 clean:

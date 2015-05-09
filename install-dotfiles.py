@@ -15,7 +15,7 @@ def create_symlink(dotname, directory=''):
     print 'create link for %s' % (path)
 
 
-exclude = ['.git', 'install-dotfiles.py', 'Makefile']
+exclude = ['.git', 'install-dotfiles.py', 'Makefile', 'z-source.sh']
 
 for f in os.listdir('.'):
     if not any(fnmatch.fnmatch(f, p) for p in exclude):
