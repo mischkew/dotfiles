@@ -87,7 +87,7 @@ alias zshconfig="$EDITOR ~/.zshrc"
 alias ohmyzsh="$EDITOR ~/.oh-my-zsh"
 alias brew-env="$HOME/Documents/workspace/brew-env"
 alias cot=colorize
-
+alias ec=emacsclient
 
 # node vms
 export NVM_DIR=~/.nvm
