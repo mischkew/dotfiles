@@ -49,7 +49,7 @@ ZSH_THEME="robbyrussell"
 export TERM=xterm-256color
 
 # Choose your fav editor
-export EDITOR='emacs'
+export EDITOR='emacsclient'
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
