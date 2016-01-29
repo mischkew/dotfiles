@@ -11,7 +11,7 @@ all: install
 # REPOSITORY
 #
 
-install: init-submodules setup-zsh
+install: init-submodules setup-zsh setup-emacs
 
 init-submodules:
 	@echo "Initializing submodules"
@@ -36,6 +36,22 @@ update-submodules:
 	@git submodule init && git submodule update && git submodule status
 
 #
+# EMACS SETUP
+#
+
+setup-emacs: install-emacs emacs-link-config
+
+install-emacs:
+	@echo "Installing emacs"
+	@brew install emacs
+	@brew linkapps emacs
+	@echo $(DONE)
+
+emacs-link-config:
+	@echo "Linking libs/emacs-config --> ~/.emacs.d"
+	@ln -i -s $(pwd)/libs/emacs-config ~/.emacs.d
+	@echo $(DONE)
+#
 # ZSH SETUP
 #
 
@@ -59,8 +75,9 @@ install-oh-my-zsh:
 zsh-link-plugins:
 	@echo "Linking zsh plugins."
 	@for plugin in ./zsh-plugins/*; do \
-		echo "Linking plugin $$plugin --> $(ZSH)/custom/plugins/$$plugin";\
-		ln -f -s $(pwd)/zsh-plugins/$$plugin $(ZSH)/custom/plugins;\
+		plug=$$(basename $$plugin); \
+		echo "Linking plugin $$plug --> $$ZSH/custom/plugins/$$plug";\
+		ln -f -s $$(pwd)/zsh-plugins/$$plug $$ZSH/custom/plugins;\
 	done;
 	@echo $(DONE)
 

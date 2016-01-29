@@ -4,3 +4,6 @@
 [submodule "libs/oh-my-zsh"]
 	path = libs/oh-my-zsh
 	url = https://github.com/robbyrussell/oh-my-zsh.git
+[submodule "libs/emacs-config"]
+	path = libs/emacs-config
+	url = https://github.com/mischkew/emacs-config
