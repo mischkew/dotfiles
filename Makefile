@@ -72,7 +72,7 @@ emacs-link-config:
 # ZSH SETUP
 #
 
-setup-zsh: install-zsh install-oh-my-zsh zsh-link-config zsh-link-plugins
+setup-zsh: install-zsh zsh-link-config
 
 install-zsh:
 	@echo "Installing zsh"
@@ -90,25 +90,6 @@ zsh-link-config:
 	@ln -f -s $(BASEDIR)/.zshrc ~/
 	@echo $(DONE)
 
-install-oh-my-zsh:
-	@echo "Installing oh-my-zsh --> ~/.oh-my-zsh"
-	@ln -i -s $(pwd)/libs/oh-my-zsh ~/.oh-my-zsh
-	@echo $(DONE)
-
-zsh-link-plugins:
-	@echo "Linking zsh plugins."
-	@for plugin in ./zsh-plugins/*; do \
-		plug=$$(basename $$plugin); \
-		echo "Linking plugin $$plug --> $$ZSH/custom/plugins/$$plug";\
-		ln -f -s $$(pwd)/zsh-plugins/$$plug $$ZSH/custom/plugins;\
-	done;
-	@echo $(DONE)
-
-new-plugin:
-	@echo "Create new zsh plugin '${name}' from ${git}"
-	@git submodule add --force ${git} zsh-plugins/${name}
-	@echo $(DONE)
-
 .PHONY: packages
 packages:
 	apt-get install dkms build-essential linux-headers-$(kernel) python2.7 python-pip subversion git
@@ -123,16 +104,6 @@ virtualbox: packages
 .PHONY: sshserver
 sshserver:
 	apt-get install openssh-server
-
-.PHONY: virtualenv
-virtualenv:
-	pip install virtualenvwrapper && /
-	@install-virtualenv.sh
-
-.PHONY: z-script
-z-script:
-	git clone https://github.com/rupa/z.git
-	echo "source z-source.sh" >> .bashrc
 
 .PHONY: clean
 clean:
