@@ -1,9 +1,9 @@
 # https://github.com/elemoine/dotfiles/blob/master/Makefile
-SHELL=/bin/bash
-kernel = $(shell uname -r)
-user = $(shell whoami)
+kernel=$(shell uname -r)
+user=$(shell whoami)
 CHECK=✔
 DONE="${CHECK} DONE."
+BASEDIR=$(shell pwd)
 
 all: install
 
@@ -36,6 +36,23 @@ update-submodules:
 	@git submodule init && git submodule update && git submodule status
 
 #
+# GIT SETUP
+#
+
+setup-git: install-git git-link-config
+
+install-git:
+	@echo "Installing git"
+	@brew install git
+	@echo $(DONE)
+
+git-link-config:
+	@echo "Linking gitconfig --> ~/.gitconfig"
+	@ln -i -s $(pwd)/gitconfig ~/.gitconfig
+	@echo "Linking gitignore_global --> ~/.gitignore_global"
+	@ln -s $(pwd)/gitignore_global ~/.gitignore_global
+	@echo $(DONE)
+#
 # EMACS SETUP
 #
 
@@ -62,9 +79,15 @@ install-zsh:
 	@brew install zsh
 	@echo $(DONE)
 
+install-antigen:
+	@echo "Installing antigen package manager"
+	@mdkir -p $(BASEDIR)/vendor
+	curl https://cdn.rawgit.com/zsh-users/antigen/v1.4.0/bin/antigen.zsh > $(BASEDIR)/vendor/antigen.zsh
+	@echo $(DONE)
+
 zsh-link-config:
 	@echo "Linking .zshrc --> ~/.zshrc"
-	@ln -f -s $(pwd)/.zshrc ~/
+	@ln -f -s $(BASEDIR)/.zshrc ~/
 	@echo $(DONE)
 
 install-oh-my-zsh:
