@@ -1,0 +1,9 @@
+caarlos0/zsh-mkc
+mafredri/zsh-async
+rupa/z
+zsh-users/zsh-completions
+
+# this should be at last
+sindresorhus/pure
+zsh-users/zsh-syntax-highlighting
+zsh-users/zsh-history-substring-search

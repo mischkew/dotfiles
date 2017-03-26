@@ -1,9 +1,0 @@
-[submodule "zsh-plugins/zsh-syntax-highlighting"]
-	path = zsh-plugins/zsh-syntax-highlighting
-	url = git://github.com/zsh-users/zsh-syntax-highlighting.git
-[submodule "libs/oh-my-zsh"]
-	path = libs/oh-my-zsh
-	url = https://github.com/robbyrussell/oh-my-zsh.git
-[submodule "libs/emacs-config"]
-	path = libs/emacs-config
-	url = https://github.com/mischkew/emacs-config

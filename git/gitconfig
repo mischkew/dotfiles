@@ -1,0 +1,67 @@
+[user]
+    name = Sven Mischkewitz
+    email = sven.mkw@gmail.com
+
+[color]
+    ui = auto
+    diff = auto
+    status = auto
+    branch = auto
+    interactive = auto
+
+[color "branch"]
+    current = cyan
+    local = yellow
+    remote = green
+
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+    whitespace = red reverse
+
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+
+[alias]
+    co = checkout
+    oneline = log --pretty=oneline
+    la = log --pretty=\"format:%ad %h (%an): %s\" --date=short
+    list = config --list
+    nf = merge --no-ff
+    ci = commit -a
+    st = status
+    s = status -s
+    br = branch
+    fix = reset --hard
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+    lga = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --branches
+    lp = log -p
+    fup = log --since '1 day ago' --oneline --author sven.mkw@gmail.com  # I know what you did yesterday - great for follow-ups
+    ls = log --pretty=format:"%C(yellow)%h %C(blue)%ad%C(red)%d %C(reset)%s%C(green) [%cn]" --decorate --date=short  # pretty one-line log with tags, branches and authors
+    lsv = log --pretty=format:"%C(yellow)%h %C(blue)%ad%C(red)%d %C(reset)%s%C(green) [%cn]" --decorate --date=short --numstat    # a verbose ls, shows changed files too
+    lg = log --oneline --decorate --graph
+    lss = log --stat --summary
+    tree = log --graph --pretty=oneline --decorate
+    last = log -1 HEAD
+    pr = "!f() { git fetch origin pull/$1/head:pr-$1 && git checkout pr-$1; }; f"
+
+[core]
+    excludesfile = ~/.gitignore_global
+    editor = emacs
+
+[difftool "sourcetree"]
+    cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+    path =
+[mergetool "sourcetree"]
+    cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+    trustExitCode = true
+[filter "media"]
+    clean = git-media-clean %f
+    smudge = git-media-smudge %f
+[filter "lfs"]
+        clean = git lfs clean %f
+        smudge = git lfs smudge %f
