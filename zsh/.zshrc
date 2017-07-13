@@ -8,6 +8,9 @@ export TERM=xterm-256color
 export ALTERNATE_EDITOR=""
 export EDITOR="emacsclient -c"
 
+# nvm lazy loading
+export NVM_LAZY_LOAD=true
+
 # load antibody package manager
 source <(antibody init)
 antibody bundle < "$ZSH_INSTALL_DIR/.antibody-bundles"
