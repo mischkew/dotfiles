@@ -29,6 +29,13 @@ source <(antibody init)
 antibody bundle < "$ZSH_INSTALL_DIR/.antibody-bundles"
 
 #
+# modify path
+#
+
+# add homebrew sbin path
+export PATH="/usr/local/sbin:$PATH"
+
+#
 # configure autocompletion
 #
 
@@ -52,11 +59,12 @@ else
 fi
 
 #
-# aliases
+# aliases and functions
 #
 
 alias zshconfig="$EDITOR ~/.zshrc"
 alias ec="emacsclient -c -n"
+it2prof() { echo -e "\033]50;SetProfile=$1\a" }
 
 # pyenv
 if which pyenv > /dev/null; then
