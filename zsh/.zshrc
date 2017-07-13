@@ -7,6 +7,16 @@ fpath=(~/.zsh/completion $fpath)
 # terminal capabilities
 export TERM=xterm-256color
 
+# save history
+HISTSIZE=1000
+if (( ! EUID )); then
+  HISTFILE=~/.history_root
+else
+  HISTFILE=~/.history
+fi
+SAVEHIST=1000
+setopt SHARE_HISTORY
+
 # Choose your fav editor
 export ALTERNATE_EDITOR=""
 export EDITOR="emacsclient -c"
