@@ -66,8 +66,11 @@ alias zshconfig="$EDITOR ~/.zshrc"
 alias ec="emacsclient -c -n"
 it2prof() { echo -e "\033]50;SetProfile=$1\a" }
 
+source $ZSH_INSTALL_DIR/docker_utils.sh
+
 # pyenv
 if which pyenv > /dev/null; then
     eval "$(pyenv init -)";
     eval "$(pyenv virtualenv-init -)";
 fi
+
