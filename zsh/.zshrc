@@ -32,6 +32,9 @@ antibody bundle < "$ZSH_INSTALL_DIR/.antibody-bundles"
 # modify path
 #
 
+# add emacs binaries
+export PATH="$PATH:~/.emacs.d/bin"
+
 # add homebrew sbin path
 export PATH="/usr/local/sbin:$PATH"
 
