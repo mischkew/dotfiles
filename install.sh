@@ -1,6 +1,6 @@
 #!/bin/sh
 
-kernel=$(uname -r)
+platform=$(uname -s)
 user=$(whoami)
 CHECK=✔
 DONE="${CHECK} DONE."
@@ -8,6 +8,11 @@ BASEDIR=$(pwd)
 
 not_configured() {
   echo "Install only configured via brew."
+  if [ $platform = "Darwin" ]; then
+    echo "Visit https://brew.sh/ for install instructions."
+  else
+    echo "Visit http://linuxbrew.sh/ for install instructions."
+  fi
 }
 
 install_zsh() {
@@ -44,7 +49,7 @@ install_python() {
     brew install pyenv pyenv-virtualenv
     echo "(2/2) Initialize pyenv and install python 3"
     eval "$(pyenv init -)"
-    pyenv install 3.6.0
+    pyenv install 3.6.2
     echo $DONE
   else
     not_configured
