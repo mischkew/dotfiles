@@ -38,6 +38,18 @@ export PATH="$PATH:~/.emacs.d/bin"
 # add homebrew sbin path
 export PATH="/usr/local/sbin:$PATH"
 
+# add cuda libs
+export CUDA_ROOT=/Developer/NVIDIA/CUDA-9.0/bin
+export CUDA_PATH=/Developer/NVIDIA/CUDA-9.0
+export PATH=$CUDA_PATH/bin:${PATH}
+export LD_LIBRARY_PATH=.:$CUDA_PATH/lib:$CUDA_PATH/libnsight:$CUDA_PATH/libnvvp:/usr/local/lib:/usr/lib:$LD_LIBRARY_PATH
+export DYLD_LIBRARY_PATH=.:$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH
+
+# add android sdk and ndk
+export PATH=${PATH}:/Users/sven/Library/Android/sdk/ndk-bundle
+export PATH=${PATH}:/Users/sven/Library/Android/sdk/platform-tools
+
+
 #
 # configure autocompletion
 #
@@ -68,6 +80,14 @@ fi
 alias zshconfig="$EDITOR ~/.zshrc"
 alias ec="emacsclient -c -n"
 it2prof() { echo -e "\033]50;SetProfile=$1\a" }
+dir2dicom() {
+    pyenv activate medconv
+    for f in *mp4; do
+	medconv --src $f to-dicom --compressed True;
+    done
+    pyenv deactivate
+}
+alias ll="ls -al"
 
 source $ZSH_INSTALL_DIR/docker_utils.sh
 
@@ -76,4 +96,3 @@ if which pyenv > /dev/null; then
     eval "$(pyenv init -)";
     eval "$(pyenv virtualenv-init -)";
 fi
-
