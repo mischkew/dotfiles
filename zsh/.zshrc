@@ -86,6 +86,8 @@ dir2dicom() {
 	medconv --src $f to-dicom --compressed True;
     done
     pyenv deactivate
+    mkdir -p dicoms
+    mv ./*.dcm dicoms
 }
 alias ll="ls -al"
 
