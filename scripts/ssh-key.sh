@@ -10,11 +10,8 @@ create_key() {
 	echo "Aborting. No key name given."
 	return 1
     fi
-    
-    if [ ! -d $export_path ]; then
-	echo "Aborting. Directory does not exist: $export_path"
-	return 1
-    fi
+
+    mkdir -p $export_path
 
     if [ -e $export_path/$key_name ]; then
 	echo "Aborting. File already exists: $export_path/$key_name"
