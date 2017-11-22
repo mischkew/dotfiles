@@ -42,8 +42,8 @@ export PATH="$PATH:~/.emacs.d/bin"
 export PATH="/usr/local/sbin:$PATH"
 
 # add cuda libs
-export CUDA_ROOT=/Developer/NVIDIA/CUDA-9.0/bin
-export CUDA_PATH=/Developer/NVIDIA/CUDA-9.0
+export CUDA_PATH=/usr/local/cuda
+export CUDA_ROOT=$CUDA_PATH
 export PATH=$CUDA_PATH/bin:${PATH}
 export LD_LIBRARY_PATH=.:$CUDA_PATH/lib:$CUDA_PATH/libnsight:$CUDA_PATH/libnvvp:/usr/local/lib:/usr/lib:$LD_LIBRARY_PATH
 export DYLD_LIBRARY_PATH=.:$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH
