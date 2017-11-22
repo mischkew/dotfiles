@@ -91,17 +91,20 @@ install_antibody() {
     echo $DONE
 }
 
-install_python() {
-  if which brew >/dev/null 2>&1; then
-    echo "(1/2) Installing pyenv"
-    brew install pyenv pyenv-virtualenv
-    echo "(2/2) Initialize pyenv and install python 3"
-    eval "$(pyenv init -)"
-    pyenv install 3.6.2
-    echo $DONE
-  else
-    not_configured
-  fi
+install_pyenv() {
+    if is_installed pyenv; then
+	echo "pyenv is already installed. Skipping."
+	return 0
+    fi
+			       
+    if is_installed brew; then
+	echo "Installing pyenv"
+	brew install pyenv pyenv-virtualenv
+	eval "$(pyenv init -)"
+	echo $DONE
+    else
+	not_configured
+    fi
 }
 
 install_brew() {
@@ -142,4 +145,5 @@ install() {
     install_zsh
     install_git
     install_antibody
+    install_pyenv
 }
