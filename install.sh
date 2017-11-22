@@ -65,14 +65,6 @@ install_zsh() {
 	    exit 1
 	fi
 	echo "zsh terminal $DONE"
-
-	echo "Setup brew paths for zsh"
-	if [ -r ~/.zprofile ]; then
-	    echo "export PATH=\"$(brew --prefix)/bin:$(brew --prefix)/sbin:\$PATH\"" >> ~/.zprofile
-	else
-	    echo "export PATH=\"$(brew --prefix)/bin:$(brew --prefix)/sbin:\$PATH\"" > ~/.zprofile
-	fi
-	echo "brew setup for zsh terminal $DONE"
     else
 	not_configured
     fi
