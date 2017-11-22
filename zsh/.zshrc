@@ -1,3 +1,6 @@
+platform=$(uname -s)
+if [ $platform = "Darwin" ]; then IS_OSX="1"; fi
+
 # dotfiles repository
 export ZSH_INSTALL_DIR=$(dirname $(readlink ~/.zshrc))
 
@@ -87,7 +90,12 @@ dir2dicom() {
     done
     pyenv deactivate
 }
-alias ll="ls -al"
+
+if [ -z $IS_OSX ]; then
+    alias pbcopy="xclip -sel clip"
+else
+    alias ll="ls -al"
+fi
 
 source $ZSH_INSTALL_DIR/docker_utils.sh
 

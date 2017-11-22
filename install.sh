@@ -43,8 +43,9 @@ install_packages_osx() {
 }
 
 install_packages_linux() {
-    sudo apt-get install \
-	 curl
+    sudo apt-get install -y \
+	 curl \
+	 xclip
 }
 
 install_zsh() {
