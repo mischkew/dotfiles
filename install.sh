@@ -30,12 +30,28 @@ is_installed() {
     which $application > /dev/null
 }
 
+install_packages() {
+    if [ -z $IS_OSX ]; then
+	install_packages_linux
+    else
+	install_packages_osx
+    fi
+}
+
+install_packages_osx() {
+    echo "No packages for OSX defined. Skipping."
+}
+
+install_packages_linux() {
+    sudo apt-get install \
+	 curl
+}
+
 install_zsh() {
     if is_installed brew; then
 	echo "Installing zsh terminal..."	
 	brew install zsh || brew upgrade zsh
 	ln -i -v -s "$BASEDIR/zsh/.zshrc" ~/.zshrc
-
 	if [ -z $IS_OSX ]; then
 	    if cat /etc/shells | grep zsh > /dev/null; then
 		echo "zsh already added to shells file"
@@ -47,29 +63,31 @@ install_zsh() {
 	    echo "Not implemented for OSX"
 	    exit 1
 	fi
-	
 	echo "zsh terminal $DONE"
+
+	echo "Setup brew paths for zsh"
+	if [ -r ~/.zprofile ]; then
+	    echo "export PATH=\"$(brew --prefix)/bin:$(brew --prefix)/sbin:\$PATH\"" >> ~/.zprofile
+	else
+	    echo "export PATH=\"$(brew --prefix)/bin:$(brew --prefix)/sbin:\$PATH\"" > ~/.zprofile
+	fi
+	echo "brew setup for zsh terminal $DONE"
     else
 	not_configured
     fi
 }
 
 install_git() {
-  echo "Linking gitconfig --> ~/.gitconfig"
-  ln -i -s "$BASEDIR/gitconfig" ~/.gitconfig
-  echo "Linking gitignore_global --> ~/.gitignore_global"
-  ln -s "$BASEDIR/gitignore_global" ~/.gitignore_global
-  echo $DONE
+    echo "Linking git configs"
+    ln -v -i -s "$BASEDIR/git/gitconfig" ~/.gitconfig
+    ln -v -i -s "$BASEDIR/git/gitignore_global" ~/.gitignore_global
+    echo $DONE
 }
 
 install_antibody() {
-  echo "Installing antibody package manager."
-  if which brew >/dev/null 2>&1; then
-    brew install getantibody/tap/antibody || brew upgrade antibody
-  else
+    echo "Installing antibody package manager."
     curl -sL https://git.io/antibody | sh -s
-  fi
-  echo $DONE
+    echo $DONE
 }
 
 install_python() {
@@ -117,5 +135,10 @@ install_brew_linux() {
     set +e
 }
 
-install_brew
-install_zsh
+install() {
+    install_packages
+    install_brew
+    install_zsh
+    install_git
+    install_antibody
+}
