@@ -82,6 +82,7 @@ fi
 
 alias zshconfig="$EDITOR ~/.zshrc"
 alias ec="emacsclient -c -n"
+alias ll="ls -al"
 it2prof() { echo -e "\033]50;SetProfile=$1\a" }
 dir2dicom() {
     pyenv activate medconv
@@ -93,10 +94,8 @@ dir2dicom() {
 
 if [ -z $IS_OSX ]; then
     alias pbcopy="xclip -sel clip"
-else
-    alias ll="ls -al"
 fi
-
+  
 source $ZSH_INSTALL_DIR/docker_utils.sh
 
 # pyenv
