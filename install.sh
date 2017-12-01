@@ -13,7 +13,7 @@ else
     echo "Not implemented for OSX"
     exit 1
 fi
-echo "Running install from $BASEDIR"
+echo "Running dotfiles install from $BASEDIR"
 
 not_configured() {
   echo "Install only configured via brew."
@@ -131,6 +131,12 @@ install_brew_linux() {
     set +e
 }
 
+install_emacs() {
+    git submodule init dotemacs
+    git submodule update dotemacs
+    sh -c "cd dotemacs && . ./install.sh && install"
+}
+
 install() {
     install_packages
     install_brew
@@ -138,4 +144,5 @@ install() {
     install_git
     install_antibody
     install_pyenv
+    install_emacs
 }
