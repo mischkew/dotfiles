@@ -84,19 +84,25 @@ alias zshconfig="$EDITOR ~/.zshrc"
 alias ec="emacsclient -c -n"
 alias ll="ls -al"
 alias tstk="pyenv activate tstk && tstk"
+alias medconv="pyenv activate medconv && medconv"
 it2prof() { echo -e "\033]50;SetProfile=$1\a" }
 dir2dicom() {
-    pyenv activate medconv
-    for f in *mp4; do
-	medconv --src $f to-dicom --compressed True;
-    done
-    pyenv deactivate
+  pyenv activate medconv
+  # for f in *avi; do
+	#   medconv --src $f to-dicom --compressed True;
+  # done
+  for f in *mp4; do
+    medconv --src $f to-dicom --compressed True;
+  done
+  mkdir -p dicom
+  mv ./*dcm dicom
+  pyenv deactivate
 }
 
 if [ -z $IS_OSX ]; then
     alias pbcopy="xclip -sel clip"
 fi
-  
+
 source $ZSH_INSTALL_DIR/docker_utils.sh
 
 # pyenv
