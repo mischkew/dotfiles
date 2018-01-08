@@ -29,18 +29,19 @@ add_key() {
     key_path=${2:-~/.ssh/}
 
     if [ -z $key_name ]; then
-	echo "Aborting. No key name given."
-	return 1
+	      echo "Aborting. No key name given."
+	      return 1
     fi
 
-    if [ ! -e $key_path/$key_name ]; then
-	echo "Aborting. File does not exist: $key_path/$key_name"
-	return 1
+    if [ ! -e $key_name ]; then
+      key_name=$keypath/$key_name
+    fi
+
+    if [ ! -e $key_name ]; then
+	      echo "Aborting. File does not exist: $key_name"
+	      return 1
     fi
 
     echo "Adding key \"$key_name\""
-    ssh-add $key_path/$key_name
-}    
-    
-create_key $1 $2
-add_key $1 $2
+    ssh-add $key_name
+}
