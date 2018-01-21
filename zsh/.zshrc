@@ -110,3 +110,9 @@ if which pyenv > /dev/null; then
     eval "$(pyenv init -)";
     eval "$(pyenv virtualenv-init -)";
 fi
+
+#
+# custom ssh keys
+#
+
+ssh-add ~/.ssh/ec2-ireland-sven.pem &> /dev/null
