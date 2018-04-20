@@ -1,3 +1,6 @@
+platform=$(uname -s)
+if [ $platform = "Darwin" ]; then IS_OSX="1"; fi
+
 # dotfiles repository
 export ZSH_INSTALL_DIR=$(dirname $(readlink ~/.zshrc))
 
@@ -19,7 +22,7 @@ setopt SHARE_HISTORY
 
 # Choose your fav editor
 export ALTERNATE_EDITOR=""
-export EDITOR="emacsclient -c"
+export EDITOR="emacsclient -c -n"
 
 # nvm lazy loading
 export NVM_LAZY_LOAD=true
@@ -39,10 +42,10 @@ export PATH="$PATH:~/.emacs.d/bin"
 export PATH="/usr/local/sbin:$PATH"
 
 # add cuda libs
-export CUDA_ROOT=/Developer/NVIDIA/CUDA-9.0/bin
-export CUDA_PATH=/Developer/NVIDIA/CUDA-9.0
+export CUDA_PATH=/usr/local/cuda
+export CUDA_ROOT=$CUDA_PATH
 export PATH=$CUDA_PATH/bin:${PATH}
-export LD_LIBRARY_PATH=.:$CUDA_PATH/lib:$CUDA_PATH/libnsight:$CUDA_PATH/libnvvp:/usr/local/lib:/usr/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=.:$CUDA_PATH/lib:$CUDA_PATH/lib64:$CUDA_PATH/libnsight:$CUDA_PATH/libnvvp:/usr/local/lib:/usr/lib:$LD_LIBRARY_PATH
 export DYLD_LIBRARY_PATH=.:$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH
 
 # add android sdk and ndk
@@ -79,17 +82,26 @@ fi
 
 alias zshconfig="$EDITOR ~/.zshrc"
 alias ec="emacsclient -c -n"
+alias ll="ls -al"
+alias tstk="pyenv activate tstk &> /dev/null && tstk"
+alias medconv="pyenv activate medconv && medconv"
 it2prof() { echo -e "\033]50;SetProfile=$1\a" }
 dir2dicom() {
-    pyenv activate medconv
-    for f in *mp4; do
-	medconv --src $f to-dicom --compressed True;
-    done
-    pyenv deactivate
-    mkdir -p dicoms
-    mv ./*.dcm dicoms
+  pyenv activate medconv
+  for f in *avi; do
+	  medconv --src $f to-dicom --compressed True;
+  done
+  for f in *mp4; do
+    medconv --src $f to-dicom --compressed True;
+  done
+  mkdir -p dicom
+  mv ./*dcm dicom
+  pyenv deactivate
 }
-alias ll="ls -al"
+
+if [ -z $IS_OSX ]; then
+    alias pbcopy="xclip -sel clip"
+fi
 
 source $ZSH_INSTALL_DIR/docker_utils.sh
 
@@ -98,3 +110,9 @@ if which pyenv > /dev/null; then
     eval "$(pyenv init -)";
     eval "$(pyenv virtualenv-init -)";
 fi
+
+#
+# custom ssh keys
+#
+
+ssh-add ~/.ssh/ec2-ireland-sven.pem &> /dev/null
