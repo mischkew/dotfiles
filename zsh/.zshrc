@@ -22,7 +22,7 @@ setopt SHARE_HISTORY
 
 # Choose your fav editor
 export ALTERNATE_EDITOR=""
-export EDITOR="emacsclient -c"
+export EDITOR="emacsclient -c -n"
 
 # nvm lazy loading
 export NVM_LAZY_LOAD=true
