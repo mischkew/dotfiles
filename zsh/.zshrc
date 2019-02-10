@@ -89,16 +89,28 @@ alias medconv="pyenv activate medconv && medconv"
 alias concat_videos=$ZSH_INSTALL_DIR/concat_videos.sh
 it2prof() { echo -e "\033]50;SetProfile=$1\a" }
 dir2dicom() {
+  localenv=$(pyenv version)
   pyenv activate medconv
-  for f in *avi; do
-	  medconv --src $f to-dicom --compressed True;
-  done
-  for f in *mp4; do
-    medconv --src $f to-dicom --compressed True;
-  done
+
+  if [ -n "$(ls | grep avi)" ]; then
+      for f in *avi; do
+        medconv --src $f to-dicom --compressed True;
+      done
+  fi
+
+  if [ -n "$(ls | grep mp4)" ]; then
+      for f in *mp4; do
+        medconv --src $f to-dicom --compressed True;
+      done
+  fi
+
   mkdir -p dicom
   mv ./*dcm dicom
+
   pyenv deactivate
+  if [ -n $localenv ]; then
+    pyenv activate $localenv
+  fi
 }
 
 if [ -z $IS_OSX ]; then
