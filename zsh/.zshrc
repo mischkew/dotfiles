@@ -113,6 +113,23 @@ dir2dicom() {
   fi
 }
 
+video2gif() {
+  input=$1
+  filename=$(basename $input)
+  output="${filename%.*}.gif"
+
+  echo "Convert $input to $output"
+
+  TMP_DIR="/tmp/video2gif-frames-$filename"
+  mkdir "$TMP_DIR"
+  ffmpeg -i "$input" -vf scale=320:-1:flags=lanczos,fps=10 "$TMP_DIR/ffout%03d.png"
+  convert -loop 0 "$TMP_DIR/ffout*.png" "$output"
+
+  rm -r "$TMP_DIR"
+
+  echo "Done!"
+}
+
 if [ -z $IS_OSX ]; then
     alias pbcopy="xclip -sel clip"
 fi
