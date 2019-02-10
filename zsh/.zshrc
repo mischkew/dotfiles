@@ -49,8 +49,9 @@ export LD_LIBRARY_PATH=.:$CUDA_PATH/lib:$CUDA_PATH/lib64:$CUDA_PATH/libnsight:$C
 export DYLD_LIBRARY_PATH=.:$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH
 
 # add android sdk and ndk
-export PATH=${PATH}:/Users/sven/Library/Android/sdk/ndk-bundle
-export PATH=${PATH}:/Users/sven/Library/Android/sdk/platform-tools
+export PATH=${PATH}:/usr/local/opt/android-ndk-r16b/
+export PATH=${PATH}:/usr/local/opt/android-studio/bin/
+export PATH=${PATH}:/home/sven/Android/Sdk/platform-tools/
 
 
 #
