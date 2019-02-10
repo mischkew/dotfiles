@@ -86,6 +86,7 @@ alias ec="emacsclient -c -n"
 alias ll="ls -al"
 alias tstk="pyenv activate tstk &> /dev/null && tstk"
 alias medconv="pyenv activate medconv && medconv"
+alias concat_videos=$ZSH_INSTALL_DIR/concat_videos.sh
 it2prof() { echo -e "\033]50;SetProfile=$1\a" }
 dir2dicom() {
   pyenv activate medconv
