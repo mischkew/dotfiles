@@ -46,7 +46,6 @@ export CUDA_PATH=/usr/local/cuda
 export CUDA_ROOT=$CUDA_PATH
 export PATH=$CUDA_PATH/bin:${PATH}
 export LD_LIBRARY_PATH=.:$CUDA_PATH/lib:$CUDA_PATH/lib64:$CUDA_PATH/libnsight:$CUDA_PATH/libnvvp:/usr/local/lib:/usr/lib:$LD_LIBRARY_PATH
-export DYLD_LIBRARY_PATH=.:$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH
 
 # add android sdk and ndk
 export PATH=${PATH}:/usr/local/opt/android-ndk-r16b/
