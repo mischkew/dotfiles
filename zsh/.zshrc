@@ -80,6 +80,7 @@ fi
 # aliases and functions
 #
 
+alias git="LANG=en-GB git"
 alias zshconfig="$EDITOR ~/.zshrc"
 alias ec="emacsclient -c -n"
 alias ll="ls -al"
