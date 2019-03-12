@@ -50,7 +50,7 @@ install_packages_linux() {
 
 install_zsh() {
     if is_installed brew; then
-	echo "Installing zsh terminal..."	
+	echo "Installing zsh terminal..."
 	brew install zsh || brew upgrade zsh
 	ln -i -v -s "$BASEDIR/zsh/.zshrc" ~/.zshrc
 	if [ -z $IS_OSX ]; then
@@ -88,7 +88,7 @@ install_pyenv() {
 	echo "pyenv is already installed. Skipping."
 	return 0
     fi
-			       
+
     if is_installed brew; then
 	echo "Installing pyenv"
 	brew install pyenv pyenv-virtualenv
@@ -106,7 +106,7 @@ install_brew() {
 	echo "Homebrew $DONE"
 	return 0
     fi
-    
+
     if [ -z $IS_OSX ]; then
 	install_brew_linux
     else
@@ -117,7 +117,7 @@ install_brew() {
 install_brew_linux() {
     set -e
     echo "Installing Homebrew..."
-    
+
     # install from remote script
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
 
@@ -137,6 +137,14 @@ install_emacs() {
     sh -c "cd dotemacs && . ./install.sh && install"
 }
 
+install_lisp() {
+  if [ -z "$(which sbcl)" ]; then
+    brew install sbcl
+  fi
+
+  # https://www.quicklisp.org/beta/#installation
+}
+
 install() {
     install_packages
     install_brew
@@ -145,4 +153,5 @@ install() {
     install_antibody
     install_pyenv
     install_emacs
+    install_lisp
 }
