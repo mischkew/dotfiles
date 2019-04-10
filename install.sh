@@ -7,12 +7,7 @@ user=$(whoami)
 CHECK=✔
 DONE="${CHECK} DONE."
 
-if [ -z "$IS_OSX" ]; then
-    BASEDIR=$(readlink -e $(dirname $0))
-else
-    echo "Not implemented for OSX"
-    exit 1
-fi
+BASEDIR=$(dirname $0)
 echo "Running dotfiles install from $BASEDIR"
 
 not_configured() {
