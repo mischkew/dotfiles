@@ -87,7 +87,6 @@ fi
 alias git="LANG=en-GB git"
 alias zshconfig="$EDITOR ~/.zshrc"
 alias ec="emacsclient -c -n"
-alias ll="ls -al"
 alias tstk="pyenv activate tstk &> /dev/null && tstk"
 alias medconv="pyenv activate medconv && medconv"
 alias concat_videos=$ZSH_INSTALL_DIR/concat_videos.sh
@@ -136,6 +135,7 @@ video2gif() {
 
 if [ -z $IS_OSX ]; then
     alias pbcopy="xclip -sel clip"
+    alias ll="ls -al"
 fi
 
 source $ZSH_INSTALL_DIR/docker_utils.sh
