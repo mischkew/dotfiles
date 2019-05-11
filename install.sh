@@ -77,6 +77,13 @@ install_git() {
     echo $DONE
 }
 
+install_ssh_config() {
+  echo "Link ssh config"
+  mkdir -p "~/.ssh/sockets" # required for tramp emacs config
+  ln -v -i -s "$BASEDIR/ssh/config" ~/.ssh/
+  echo $DONE
+}
+
 install_antibody() {
     echo "Installing antibody package manager."
     curl -sL https://git.io/antibody | sh -s
@@ -154,4 +161,5 @@ install() {
     install_pyenv
     install_emacs
     install_lisp
+    install_ssh
 }
