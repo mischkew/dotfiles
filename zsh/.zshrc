@@ -87,6 +87,8 @@ alias ll="ls -al"
 alias tstk="pyenv activate tstk &> /dev/null && tstk"
 alias medconv="pyenv activate medconv && medconv"
 alias concat_videos=$ZSH_INSTALL_DIR/concat_videos.sh
+alias start_bundling="aws ec2 start-instances --instance-ids i-09515906231acecf8 --region eu-west-1"
+
 it2prof() { echo -e "\033]50;SetProfile=$1\a" }
 dir2dicom() {
   localenv=$(pyenv version)
