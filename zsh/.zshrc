@@ -94,25 +94,17 @@ dir2dicom() {
   localenv=$(pyenv version)
   pyenv activate medconv
 
-  if [ -n "$(ls | grep avi)" ]; then
-      for f in *avi; do
-        medconv --src $f to-dicom --compressed True;
-      done
-  fi
+  videos=$(find ./ -type f \( -name "*avi" -or -name "*mp4" \))
+  while read -r video; do
+    dcm=${video%.*}.dcm
+    if [ ! -f "$dcm" ]; then
+      medconv --src "$video" to-dicom --compressed True;
+    else
+      echo "$dcm already exists. Skipping conversion."
+    fi
+  done <<< $videos
 
-  if [ -n "$(ls | grep mp4)" ]; then
-      for f in *mp4; do
-        medconv --src $f to-dicom --compressed True;
-      done
-  fi
-
-  mkdir -p dicom
-  mv ./*dcm dicom
-
-  pyenv deactivate
-  if [ -n $localenv ]; then
-    pyenv activate $localenv
-  fi
+  pyenv activate $localenv
 }
 
 video2gif() {
