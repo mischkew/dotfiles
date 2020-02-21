@@ -11,25 +11,25 @@ BASEDIR=$(dirname $0)
 echo "Running dotfiles install from $BASEDIR"
 
 not_configured() {
-  echo "Install only configured via brew."
-  if [ $platform = "Darwin" ]; then
-    echo "Visit https://brew.sh/ for install instructions."
-  else
-    echo "Visit http://linuxbrew.sh/ for install instructions."
-  fi
+    echo "Install only configured via brew."
+    if [ $platform = "Darwin" ]; then
+        echo "Visit https://brew.sh/ for install instructions."
+    else
+        echo "Visit http://linuxbrew.sh/ for install instructions."
+    fi
 }
 
 is_installed() {
     # 1 - application
     application=$1
-    which $application > /dev/null
+    which $application >/dev/null
 }
 
 install_packages() {
     if [ -z $IS_OSX ]; then
-	install_packages_linux
+        install_packages_linux
     else
-	install_packages_osx
+        install_packages_osx
     fi
 }
 
@@ -39,29 +39,29 @@ install_packages_osx() {
 
 install_packages_linux() {
     sudo apt-get install -y \
-	 curl \
-	 xclip
+        curl \
+        xclip
 }
 
 install_zsh() {
     if is_installed brew; then
-	echo "Installing zsh terminal..."
-	brew install zsh || brew upgrade zsh
-	ln -i -v -s "$BASEDIR/zsh/.zshrc" ~/.zshrc
-	if [ -z $IS_OSX ]; then
-	    if cat /etc/shells | grep zsh > /dev/null; then
-		echo "zsh already added to shells file"
-	    else
-		command -v zsh | sudo tee -a /etc/shells
-	    fi
-	    chsh -s $(which zsh)
-	else
-	    echo "Not implemented for OSX"
-	    exit 1
-	fi
-	echo "zsh terminal $DONE"
+        echo "Installing zsh terminal..."
+        brew install zsh || brew upgrade zsh
+        ln -i -v -s "$BASEDIR/zsh/.zshrc" ~/.zshrc
+        if [ -z $IS_OSX ]; then
+            if cat /etc/shells | grep zsh >/dev/null; then
+                echo "zsh already added to shells file"
+            else
+                command -v zsh | sudo tee -a /etc/shells
+            fi
+            chsh -s $(which zsh)
+        else
+            echo "Not implemented for OSX"
+            exit 1
+        fi
+        echo "zsh terminal $DONE"
     else
-	not_configured
+        not_configured
     fi
 }
 
@@ -69,6 +69,13 @@ install_git() {
     echo "Linking git configs"
     ln -v -i -s "$BASEDIR/git/gitconfig" ~/.gitconfig
     ln -v -i -s "$BASEDIR/git/gitignore_global" ~/.gitignore_global
+    echo $DONE
+}
+
+install_ssh_config() {
+    echo "Link ssh config"
+    mkdir -p "~/.ssh/sockets" # required for tramp emacs config
+    ln -v -i -s "$BASEDIR/ssh/config" ~/.ssh/
     echo $DONE
 }
 
@@ -80,32 +87,32 @@ install_antibody() {
 
 install_pyenv() {
     if is_installed pyenv; then
-	echo "pyenv is already installed. Skipping."
-	return 0
+        echo "pyenv is already installed. Skipping."
+        return 0
     fi
 
     if is_installed brew; then
-	echo "Installing pyenv"
-	brew install pyenv pyenv-virtualenv
-	eval "$(pyenv init -)"
-	echo $DONE
+        echo "Installing pyenv"
+        brew install pyenv pyenv-virtualenv
+        eval "$(pyenv init -)"
+        echo $DONE
     else
-	not_configured
+        not_configured
     fi
 }
 
 install_brew() {
     if is_installed brew; then
-	echo "Upgrading Homebrew..."
-	brew update && brew upgrade
-	echo "Homebrew $DONE"
-	return 0
+        echo "Upgrading Homebrew..."
+        brew update && brew upgrade
+        echo "Homebrew $DONE"
+        return 0
     fi
 
     if [ -z $IS_OSX ]; then
-	install_brew_linux
+        install_brew_linux
     else
-	install_brew_osx
+        install_brew_osx
     fi
 }
 
@@ -133,11 +140,10 @@ install_emacs() {
 }
 
 install_lisp() {
-  if [ -z "$(which sbcl)" ]; then
-    brew install sbcl
-  fi
-
-  # https://www.quicklisp.org/beta/#installation
+    if [ -z "$(which sbcl)" ]; then
+        brew install sbcl
+    fi
+    # See https://www.quicklisp.org/beta/#installation to install quicklisp
 }
 
 install() {
@@ -148,5 +154,4 @@ install() {
     install_antibody
     install_pyenv
     install_emacs
-    install_lisp
 }
