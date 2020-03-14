@@ -3,6 +3,7 @@ if [ $platform = "Darwin" ]; then IS_OSX="1"; fi
 
 # dotfiles repository
 export ZSH_INSTALL_DIR=$(dirname $(readlink ~/.zshrc))
+export ZSHRC="$ZSH_INSTALL_DIR/.zshrc"
 
 # load completions
 fpath=(~/.zsh/completion $fpath)
