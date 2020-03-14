@@ -47,13 +47,23 @@ export CUDA_PATH=/usr/local/cuda
 export CUDA_ROOT=$CUDA_PATH
 export PATH=$CUDA_PATH/bin:${PATH}
 export LD_LIBRARY_PATH=.:$CUDA_PATH/lib:$CUDA_PATH/lib64:$CUDA_PATH/libnsight:$CUDA_PATH/libnvvp:/usr/local/lib:/usr/lib:$LD_LIBRARY_PATH
-export DYLD_LIBRARY_PATH=.:$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH
+
+if [ $platform = "Darwin" ]; then
+  export DYLD_LIBRARY_PATH=.:$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH
+fi
 
 # add android sdk and ndk
 export PATH=${PATH}:/usr/local/opt/android-ndk-r16b/
 export PATH=${PATH}:/usr/local/opt/android-studio/bin/
 export PATH=${PATH}:/home/sven/Android/Sdk/platform-tools/
 
+if [ $platform = "Linux" ]; then
+  # glib modules
+  export GIO_EXTRA_MODULES=/usr/lib/x86_64-linux-gnu/gio/modules/
+
+  # add node to path
+  export PATH=${PATH}:/home/sven/.nvm/versions/node/v10.16.0/bin/node
+fi
 
 #
 # configure autocompletion
