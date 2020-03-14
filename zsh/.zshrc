@@ -90,6 +90,9 @@ alias medconv="pyenv activate medconv && medconv"
 alias concat_videos=$ZSH_INSTALL_DIR/concat_videos.sh
 alias start_bundling="pyenv activate tstk && aws ec2 start-instances --instance-ids i-09515906231acecf8 --region eu-west-1"
 alias lsports="netstat -ltnp"
+if [ $platform = "Linux" ]; then
+  alias open="xdg-open"
+fi
 
 it2prof() { echo -e "\033]50;SetProfile=$1\a" }
 dir2dicom() {
