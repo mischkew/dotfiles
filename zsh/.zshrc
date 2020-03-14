@@ -22,8 +22,8 @@ SAVEHIST=1000
 setopt SHARE_HISTORY
 
 # Choose your fav editor
-export ALTERNATE_EDITOR=""
-export EDITOR="emacsclient -c -n"
+export ALTERNATE_EDITOR="emacsclient -c -n"
+export EDITOR="code -w"
 
 # nvm lazy loading
 export NVM_LAZY_LOAD=true
