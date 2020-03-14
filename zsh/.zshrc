@@ -3,6 +3,7 @@ if [ $platform = "Darwin" ]; then IS_OSX="1"; fi
 
 # dotfiles repository
 export ZSH_INSTALL_DIR=$(dirname $(readlink ~/.zshrc))
+export ZSHRC="$ZSH_INSTALL_DIR/.zshrc"
 
 # load completions
 fpath=(~/.zsh/completion $fpath)
@@ -51,11 +52,23 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$CUDA_PATH/lib64
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$CUDA_PATH/libnsight
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$CUDA_PATH/libnvvp
 
+if [ $platform = "Darwin" ]; then
+  export DYLD_LIBRARY_PATH=.:$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH
+fi
+
+
 # add android sdk and ndk
 export PATH=${PATH}:/usr/local/opt/android-ndk-r16b/
 export PATH=${PATH}:/usr/local/opt/android-studio/bin/
 export PATH=${PATH}:/home/sven/Android/Sdk/platform-tools/
 
+if [ $platform = "Linux" ]; then
+  # glib modules
+  export GIO_EXTRA_MODULES=/usr/lib/x86_64-linux-gnu/gio/modules/
+
+  # add node to path
+  export PATH=${PATH}:/home/sven/.nvm/versions/node/v10.16.0/bin/node
+fi
 
 #
 # configure autocompletion
@@ -92,6 +105,9 @@ alias medconv="pyenv activate medconv && medconv"
 alias concat_videos=$ZSH_INSTALL_DIR/concat_videos.sh
 alias start_bundling="pyenv activate tstk && aws ec2 start-instances --instance-ids i-09515906231acecf8 --region eu-west-1"
 alias lsports="netstat -ltnp"
+if [ $platform = "Linux" ]; then
+  alias open="xdg-open"
+fi
 
 it2prof() { echo -e "\033]50;SetProfile=$1\a" }
 dir2dicom() {
@@ -146,4 +162,7 @@ fi
 # custom ssh keys
 #
 
-ssh-add ~/.ssh/ec2-ireland-sven.pem &> /dev/null
+SSH_KEY = "~/.ssh/ec2-ireland-sven.pem"
+if [ -f "$SSH_KEY" ]; then
+  ssh-add "$SSH_KEY"  &> /dev/null
+fi
