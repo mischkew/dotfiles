@@ -1,11 +1,69 @@
 {
+  //
+  // Common Configs
+  //
+  "files.watcherExclude": {
+    // Exlcude Python related files
+    "**/.pytest_cache/**": true,
+    "**/.mypy_cache/**": true,
+    "**/__pycache__/**": true,
+    // Exclude Javascript related files
+    "**/node_modules/**": true,
+  },
+  "editor.formatOnSave": true,
+  "editor.rulers": [
+    80
+  ],
+  //
+  // Python Setup
+  //
   "python.linting.pylintEnabled": false,
   "python.linting.flake8Enabled": true,
   "python.linting.enabled": true,
+  "python.linting.mypyEnabled": true,
   "python.formatting.provider": "black",
+  "pythonTestExplorer.testFramework": "pytest",
+  "python.envFile": "${workspaceFolder}/.vscode/.env",
+  "python.testing.pytestArgs": [],
+  "python.pythonPath": "/home/sven/.pyenv/versions/noconda/bin/python",
+  "[python]": {
+    "editor.rulers": [
+      80,
+      88
+    ],
+  },
+  //
+  // Javascript with JSX
+  //
+  "jest.rootPath": "frontend/react-client/src",
+  "jest.debugMode": true,
+  "[javascript]": {
+    "editor.rulers": [
+      80,
+      100
+    ],
+  },
+  "[javascriptreact]": {
+    "editor.rulers": [
+      80,
+      100
+    ],
+  },
+  "eslint.format.enable": true,
+  "eslint.workingDirectories": [
+    "frontend/react-client"
+  ],
+  "eslint.nodePath": "<rootDir>/frontend/react-client",
+  //
+  // Git
+  //
+  "[gitcommitmessage]": {
+    "editor.rulers": [
+      72,
+      80
+    ],
+  },
   "python.testing.unittestEnabled": false,
   "python.testing.nosetestsEnabled": false,
-  "python.testing.pytestEnabled": true,
-  "python.testing.debugPort": 4010,
-  "jest.debugMode": true
+  "python.testing.pytestEnabled": true
 }
