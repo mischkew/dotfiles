@@ -162,7 +162,7 @@ fi
 # custom ssh keys
 #
 
-SSH_KEY = "~/.ssh/ec2-ireland-sven.pem"
+SSH_KEY="~/.ssh/ec2-ireland-sven.pem"
 if [ -f "$SSH_KEY" ]; then
   ssh-add "$SSH_KEY"  &> /dev/null
 fi
