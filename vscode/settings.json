@@ -14,6 +14,7 @@
   "editor.rulers": [
     80
   ],
+  "window.enableMenuBarMnemonics": false
   //
   // Python Setup
   //
@@ -50,10 +51,9 @@
     ],
   },
   "eslint.format.enable": true,
-  "eslint.workingDirectories": [
-    "frontend/react-client"
-  ],
-  "eslint.nodePath": "<rootDir>/frontend/react-client",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
   //
   // Git
   //
