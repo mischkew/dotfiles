@@ -10,6 +10,8 @@ fpath=(~/.zsh/completion $fpath)
 
 # terminal capabilities
 export TERM=xterm-256color
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
 
 # save history
 HISTSIZE=1000
@@ -67,7 +69,7 @@ if [ $platform = "Linux" ]; then
   export GIO_EXTRA_MODULES=/usr/lib/x86_64-linux-gnu/gio/modules/
 
   # add node to path
-  export PATH=${PATH}:/home/sven/.nvm/versions/node/v10.16.0/bin/node
+  export PATH=${PATH}:/home/sven/.nvm/versions/node/v10.16.0/bin
 fi
 
 #
