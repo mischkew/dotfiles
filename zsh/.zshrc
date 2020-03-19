@@ -10,8 +10,8 @@ fpath=(~/.zsh/completion $fpath)
 
 # terminal capabilities
 export TERM=xterm-256color
-export LC_ALL=C.UTF-8
-export LANG=C.UTF-8
+export LC_ALL=en_GB.UTF-8
+export LANG=en_GB.UTF-8
 
 # save history
 HISTSIZE=1000
