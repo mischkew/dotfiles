@@ -128,6 +128,22 @@ dir2dicom() {
 
   pyenv activate $localenv
 }
+dir2video() {
+  localenv=$(pyenv version)
+  pyenv activate medconv
+
+  dicoms=$(find ./ -type f \( -name "*dcm" \))
+  while read -r dicom; do
+    mp4=${dicom%.*}.mp4
+    if [ ! -f "$mp4" ]; then
+      medconv --src "$dicom" - to-video;
+    else
+      echo "$mp4 already exists. Skipping conversion."
+    fi
+  done <<< $dicoms
+
+  pyenv activate $localenv
+}
 
 video2gif() {
   input=$1
