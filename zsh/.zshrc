@@ -169,12 +169,6 @@ fi
 
 source $ZSH_INSTALL_DIR/docker_utils.sh
 
-# pyenv
-export PATH="${HOME}/.pyenv/bin:${PATH}"
-if which pyenv > /dev/null; then
-  eval "$(pyenv init -)";
-  eval "$(pyenv virtualenv-init -)";
-fi
 
 #
 # custom ssh keys
