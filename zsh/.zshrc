@@ -86,12 +86,12 @@ zstyle ':completion:*' menu select=2
 
 # speed up initialization of auto complete
 autoload -Uz compinit
-typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
-if [ $(date +'%j') != $updated_at ]; then
-  compinit -i
-else
-  compinit -C
-fi
+
+# only update the completion dump once a day
+for dump in ~/.zcompdump(N.mh+24); do
+  compinit # reuse a previous completion dump file if one exists
+done
+compinit -C # create a dump file if none exists
 
 #
 # aliases and functions
@@ -165,8 +165,8 @@ if [ -z $IS_OSX ]; then
     alias ll="ls -al"
 fi
 
-source $ZSH_INSTALL_DIR/docker_utils.sh
-
+# homebrew ruby
+export PATH="/usr/local/opt/ruby/bin:$PATH"
 
 #
 # custom ssh keys
