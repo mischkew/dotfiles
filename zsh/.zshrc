@@ -1,3 +1,4 @@
+#! /bin/zsh
 platform=$(uname -s)
 if [ $platform = "Darwin" ]; then IS_OSX="1"; fi
 
@@ -6,22 +7,19 @@ export ZSH_INSTALL_DIR=$(dirname $(readlink ~/.zshrc))
 export ZSHRC="$ZSH_INSTALL_DIR/.zshrc"
 
 # load completions
-fpath=(~/.zsh/completion $fpath)
+fpath=("$ZSH_INSTALL_DIR/completion" $fpath)
 
 # terminal capabilities
 export TERM=xterm-256color
 export LC_ALL=en_GB.UTF-8
 export LANG=en_GB.UTF-8
 
-# save history
-HISTSIZE=1000
-if (( ! EUID )); then
-  HISTFILE=~/.history_root
-else
-  HISTFILE=~/.history
-fi
-SAVEHIST=1000
-setopt SHARE_HISTORY
+# shell history configuration, see `man zshoptions` and `man zshparams`
+HISTSIZE=10000 # load past <HISTSIZE> commands into history
+SAVEHIST=10000 # store past <SAVEHIST> commands to disk
+HISTFILE=~/.history # store history into <HISTFILE>
+setopt SHARE_HISTORY # share command history between multiple shells
+setopt HIST_FIND_NO_DUPS # don't search for duplicate commands with C-r
 
 # Choose your fav editor
 export ALTERNATE_EDITOR="emacsclient -c -n"
