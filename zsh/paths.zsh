@@ -3,9 +3,6 @@
 # add emacs binaries
 export PATH="$PATH:~/.emacs.d/bin"
 
-# add homebrew sbin path
-export PATH="/usr/local/sbin:$PATH"
-
 # add cuda libs
 export CUDA_PATH=/usr/local/cuda
 export CUDA_ROOT=$CUDA_PATH

@@ -1,0 +1,38 @@
+#! /bin/bash
+#
+# This script creates symlinks for all *.symlink files in $HOME
+
+cd "$(dirname "$0")/.."
+DOTFILES_ROOT=$(pwd -P)
+
+set -e
+source "$DOTFILES_ROOT/scripts/utils.sh"
+
+link_file() {
+  if [ -e "$2" ]; then
+    if [ "$(readlink "$2")" = "$1" ]; then
+      success "skipped $1"
+      return 0
+    else
+      mv "$2" "$2.backup"
+      success "moved $2 to $2.backup"
+    fi
+  fi
+  ln -sf "$1" "$2"
+  success "linked $1 to $2"
+}
+
+install_dotfiles() {
+  info 'installing dotfiles'
+  find -H "$DOTFILES_ROOT" -maxdepth 3 -name '*.symlink' -not -path '*.git*' |
+    while read -r src; do
+      dst="$HOME/.$(basename "${src%.*}")"
+      link_file "$src" "$dst"
+    done
+}
+
+echo ''
+install_dotfiles
+
+echo ''
+success '  All installed!'

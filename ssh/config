@@ -1,12 +1,10 @@
-# reuse existing sockets to speed up connections, e.g. with emacs remote
-# editing
 Host *
-     ControlMaster auto
-     ControlPath ~/.ssh/sockets/%r@%h-%p
-     ControlPersist 600
+    UseKeychain yes
 
-# aws bundling dev machine (with an elastic ip)
-Host bundling
-     HostName 108.128.20.30
-     User ubuntu
-     ForwardAgent yes
+    # reuse existing sockets to speed up connections, e.g. with emacs remote
+    # editing
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/%r@%h-%p
+    ControlPersist 600
+
+

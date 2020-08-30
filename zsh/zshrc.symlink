@@ -9,8 +9,9 @@ export EDITOR="code -w"
 # set $PATH variables
 source "$DOTFILES/zsh/paths.zsh"
 
-# load zsh plugins
-source "$DOTFILES/zsh/antibody.zsh"
+# load zsh plugins via antibody package manager
+source <(antibody init)
+antibody bundle <"$DOTFILES/antibody/bundles.txt"
 
 source "$DOTFILES/zsh/completion.zsh"
 source "$DOTFILES/zsh/config.zsh"
@@ -31,3 +32,15 @@ for dump in ~/.zcompdump(N.mh+24); do
   compinit # reuse a previous completion dump file if one exists
 done
 compinit -C # create a dump file if none exists
+
+#
+# Load zsh modules of modules inside this dotfile repository
+#
+
+find "$DOTFILES" -name "*.zsh" -path -not "zsh"
+for module in ($DOTFILES/*/*.zsh); do
+  source "$module"
+done
+
+
+

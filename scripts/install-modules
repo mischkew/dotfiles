@@ -1,0 +1,20 @@
+#! /bin/bash
+#
+# This script runs the `install.sh` file of each module in this dotfiles
+# repository
+
+cd "$(dirname "$0")/.."
+DOTFILES_ROOT=$(pwd -P)
+
+set -e
+source "$DOTFILES_ROOT/scripts/utils.sh"
+
+find "$DOTFILES_ROOT" -name "install.sh" -depth 2 | while read -r installer; do
+  module="$(basename "$(dirname $installer)")"
+  info "installing $module"
+  /bin/bash -c "$installer"
+  success "done"
+done
+
+echo ''
+success "installed all modules"
