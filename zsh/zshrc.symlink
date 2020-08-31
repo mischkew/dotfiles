@@ -37,8 +37,7 @@ compinit -C # create a dump file if none exists
 # Load zsh modules of modules inside this dotfile repository
 #
 
-find "$DOTFILES" -name "*.zsh" -path -not "zsh"
-for module in ($DOTFILES/*/*.zsh); do
+find "$DOTFILES" -name "*.zsh" -not -path "zsh" | while read -r module; do
   source "$module"
 done
 
