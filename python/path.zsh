@@ -1,3 +1,9 @@
 #! /bin/zsh
 
-# pyenv initialization moved to zsh/zlogin.symlink due to performance
+# This lazy-loads pyenv by executing the pyenv init command first call, which
+# then essentially replaces this function
+# See: https://carlosbecker.com/posts/speeding-up-zsh
+pyenv() {
+  eval "$(command pyenv init -)"
+  pyenv "$@"
+}

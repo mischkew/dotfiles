@@ -1,7 +1,0 @@
-# pyenv
-# Slow start fix: https://github.com/pyenv/pyenv/issues/784
-export PATH="${HOME}/.pyenv/bin:${PATH}"
-if which pyenv > /dev/null; then
-  eval "$(pyenv init - zsh --no-rehash)"
-  eval "$(pyenv virtualenv-init -)"
-fi
