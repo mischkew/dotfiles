@@ -7,7 +7,7 @@ export PLATFORM="$(uname -s)"
 if [ "$TERM_PROGRAM" = "vscode" ]; then
   export EDITOR="code -w"
 else
-  export EDITOR="emacs -nw"
+  export EDITOR="emacsclient -nw -a 'emacs -nw'"
 fi
 
 # set $PATH variables
