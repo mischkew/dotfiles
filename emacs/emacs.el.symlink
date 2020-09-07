@@ -1,0 +1,2 @@
+;; Always enable line numbers
+(global-display-line-numbers-mode 't)
