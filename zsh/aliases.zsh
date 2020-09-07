@@ -1,7 +1,7 @@
 #! /bin/zsh
 
 alias zshconfig="$EDITOR $HOME/.zshrc"
-alias ec="emacsclient -c -n"
+alias ec="emacsclient -nw -a 'emacs -nw'"
 alias ls-ports="netstat -ltnp"
 alias ll="ls -al"
 
