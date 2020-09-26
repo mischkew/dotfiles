@@ -1,2 +1,47 @@
 ;; Always enable line numbers
 (global-display-line-numbers-mode 't)
+
+;; kill the current buffer with a single key combo
+(defun kill-this-buffer ()
+  (interactive)
+  (kill-buffer (buffer-name)))
+(global-set-key (kbd "C-x C-k") 'kill-this-buffer)
+
+;; toggle between moving to beginning of line and first non-whitespace
+;; character
+(defun smarter-move-beginning-of-line ()
+"Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line."
+  (interactive)
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+(global-set-key [remap move-beginning-of-line]
+                'smarter-move-beginning-of-line)
+
+;;
+;; Improved Experience when running in a terminal
+;;
+
+(defun copy-to-clipboard ()
+  "Executes a shell command which takes the current region as stdin
+  and copies it to the OS-clipboard outside of the emacs kill-ring we
+  use `pbcopy`. On my system this is an alias for xlip on linux"
+  (interactive)
+  (shell-command-on-region (point) (mark) "pbcopy"))
+(global-set-key (kbd "C-c C-r") 'copy-to-clipboard)
+
+;;
+;; Org-Mode
+;;
+
+(setq org-todo-keywords
+      '((sequence "TODO" "WIP" "|" "DONE")))
+
+(setq org-agenda-files
+      (list "~/Documents/workspace/notes/"))
+
+(global-set-key (kbd "C-c a") 'org-agenda)
