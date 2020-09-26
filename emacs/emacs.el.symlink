@@ -1,3 +1,22 @@
+;; install straight.el package manager
+;; See: https://github.com/raxod502/straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+;;
+;; Global Settings and Keyboard Shortcuts
+;;
+
 ;; Always enable line numbers
 (global-display-line-numbers-mode 't)
 
@@ -22,10 +41,7 @@ the beginning of the line."
 (global-set-key [remap move-beginning-of-line]
                 'smarter-move-beginning-of-line)
 
-;;
-;; Improved Experience when running in a terminal
-;;
-
+;; copy region to clipboard when running in terminal
 (defun copy-to-clipboard ()
   "Executes a shell command which takes the current region as stdin
   and copies it to the OS-clipboard outside of the emacs kill-ring we
@@ -45,3 +61,16 @@ the beginning of the line."
       (list "~/Documents/workspace/notes/"))
 
 (global-set-key (kbd "C-c a") 'org-agenda)
+
+;;
+;; FlyCheck
+;;
+
+(straight-use-package 'flycheck)
+
+;;
+;; Sh/ Bash
+;;
+
+(add-hook 'sh-mode-hook 'flycheck-mode)
+
