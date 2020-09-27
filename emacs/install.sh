@@ -24,7 +24,12 @@ fi
 # install auxiliary packages for emacs usage
 #
 
-brew install shellcheck
+if command -v shellcheck >/dev/null 2>&1; then
+    info 'shellcheck is already installed'
+else
+    info 'install shellcheck'
+    brew install shellcheck
+fi
 
 #
 # setup emacs daemon

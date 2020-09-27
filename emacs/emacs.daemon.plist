@@ -9,7 +9,7 @@
       <string>/usr/local/bin/emacs</string>
       <string>--daemon</string>
     </array>
-    <key>RunAtLoad</key>
+    <key>KeepAlive</key>
     <true/>
     <key>ServiceDescription</key>
     <string>Emacs Daemon</string>

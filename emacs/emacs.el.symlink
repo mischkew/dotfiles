@@ -58,7 +58,9 @@ the beginning of the line."
       '((sequence "TODO" "WIP" "|" "DONE")))
 
 (setq org-agenda-files
-      (list "~/Documents/workspace/notes/"))
+      (list
+       "~/Documents/workspace/notes/work"
+       "~/Documents/workspace/notes/private"))
 
 (global-set-key (kbd "C-c a") 'org-agenda)
 
