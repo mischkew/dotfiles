@@ -1,28 +1,28 @@
 #! /bin/zsh
 
+set -x
+
 video2gif() {
-  if [[ $@ -ne 2 ]]; then
-    echo >&2 "Provide a video path as the single parameter to this function."
+  # See: https://engineering.giphy.com/how-to-make-gifs-with-ffmpeg/
+  if [[ "$#" -ne 2 ]]; then
+    echo >&2 "Provide a video path (or '-') as input and output."
     return 1
   fi
   input="$1"
+  output="$2"
 
-  if [ ! -f "$input" ]; then
-    echo >&2 "The video file \"$input\" does not exist!"
-    return 1
+  # read from stdin
+  if [ "$input" = "-" ]; then
+      input="pipe:"
   fi
 
-  filename=$(basename $input)
-  output="${filename%.*}.gif"
-
-  echo "Convert $input to $output"
-
-  TMP_DIR="/tmp/video2gif-frames-$filename"
-  mkdir "$TMP_DIR"
-  ffmpeg -i "$input" -vf scale=320:-1:flags=lanczos,fps=10 "$TMP_DIR/ffout%03d.png"
-  convert -loop 0 "$TMP_DIR/ffout*.png" "$output"
-
-  rm -r "$TMP_DIR"
-
-  echo "Done!"
+  # write to stdout
+  if [ "$output" = "-" ]; then
+      output="pipe:"
+  fi
+      
+  ffmpeg \
+      -i "$input" \
+      -filter_complex "[0:v] fps=12,scale=480:-1,split [a][b];[a] palettegen [p];[b][p] paletteuse" \
+      "$output"
 }
