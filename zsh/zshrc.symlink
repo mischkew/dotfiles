@@ -13,6 +13,9 @@ fi
 # set $PATH variables
 source "$DOTFILES/zsh/paths.zsh"
 
+# configure z extension (loaded via antibody)
+export _Z_OWNER="$USER"
+
 # load zsh plugins via antibody package manager
 source <(antibody init)
 antibody bundle <"$DOTFILES/antibody/bundles.txt"
