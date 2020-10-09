@@ -52,4 +52,5 @@
   "python.testing.unittestEnabled": false,
   "python.testing.nosetestsEnabled": false,
   "python.testing.pytestEnabled": true,
+  "workbench.colorTheme": "Dracula Soft",
 }
