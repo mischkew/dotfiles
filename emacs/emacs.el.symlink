@@ -33,8 +33,13 @@
 ;; Global Settings and Keyboard Shortcuts
 ;;
 
-;; Always enable line numbers
-(global-display-line-numbers-mode 't)
+(setq inhibit-startup-message t) ; don't show the emacs startup screen
+(scroll-bar-mode -1) ; disable visible scrollbar
+(tool-bar-mode -1) ; disable the top toolbar
+(tooltip-mode -1) ; disable any tooltips
+(set-fringe-mode 10) ; set some margin
+(menu-bar-mode -1) ; disable the top menu bar
+(global-display-line-numbers-mode 't) ; always enable line numbers
 
 ;; kill the current buffer with a single key combo
 (defun kill-this-buffer ()
@@ -65,6 +70,9 @@ the beginning of the line."
   (interactive)
   (shell-command-on-region (point) (mark) "pbcopy"))
 (global-set-key (kbd "C-c C-r") 'copy-to-clipboard)
+
+;; hide minor mode titles in mode-bar
+(use-package diminish :straight t :ensure t)
 
 ;;
 ;; Org-Mode
