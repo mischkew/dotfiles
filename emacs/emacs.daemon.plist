@@ -6,8 +6,8 @@
     <string>emacs.daemon</string>
     <key>ProgramArguments</key>
     <array>
-      <string>/usr/local/bin/emacs</string>
-      <string>--daemon</string>
+      <string>/Applications/Emacs.app/Contents/MacOS/Emacs-x86_64-10_14</string>
+      <string>--fg-daemon=system-server</string>
     </array>
     <key>KeepAlive</key>
     <true/>
