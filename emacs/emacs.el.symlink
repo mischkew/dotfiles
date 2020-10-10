@@ -95,6 +95,17 @@ the beginning of the line."
 (global-set-key (kbd "C-c a") 'org-agenda)
 
 ;;
+;; Ivy - Command Completion
+;;
+
+(use-package ivy
+  :straight t
+  :ensure t
+  :diminish
+  :config
+  (ivy-mode 1))
+
+;;
 ;; FlyCheck
 ;;
 
