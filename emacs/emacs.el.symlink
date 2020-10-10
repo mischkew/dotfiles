@@ -74,6 +74,12 @@ the beginning of the line."
 ;; hide minor mode titles in mode-bar
 (use-package diminish :straight t :ensure t)
 
+;; pimp the modeline
+(use-package doom-modeline
+  :straight t
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
+
 ;;
 ;; Org-Mode
 ;;
