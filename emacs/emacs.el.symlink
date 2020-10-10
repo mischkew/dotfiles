@@ -110,6 +110,31 @@ the beginning of the line."
   :config
   (ivy-mode 1))
 
+(use-package counsel
+  :straight t
+  :bind (("M-x" . counsel-M-x)
+	 ("C-x b" . counsel-ibuffer)
+	 ("C-x C-f" . counsel-find-file)
+	 :map minibuffer-local-map
+	 ("C-r" . 'counsel-minibuffer-history)))
+
+(use-package ivy-rich
+  :straight t
+  :ensure t
+  :diminish
+  :init (ivy-rich-mode 1))
+
+;;
+;; Which Key Mode - Get hints on keyboard shortcuts
+;;
+
+(use-package which-key
+  :straight t
+  :ensure t
+  :diminish which-key-mode
+  :init (which-key-mode)
+  :config (setq which-key-idle-delay 0.5))
+
 ;;
 ;; FlyCheck
 ;;
