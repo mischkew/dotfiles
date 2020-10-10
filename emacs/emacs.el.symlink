@@ -39,6 +39,7 @@
 (tooltip-mode -1) ; disable any tooltips
 (set-fringe-mode 10) ; set some margin
 (menu-bar-mode -1) ; disable the top menu bar
+(column-number-mode) ; display the column number in the modeline
 (global-display-line-numbers-mode 't) ; always enable line numbers
 
 ;; kill the current buffer with a single key combo
