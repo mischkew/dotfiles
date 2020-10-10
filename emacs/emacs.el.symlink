@@ -76,6 +76,10 @@ the beginning of the line."
 (use-package diminish :straight t :ensure t)
 
 ;; pimp the modeline
+(use-package all-the-icons ; run M-x all-the-icons-install-fonts
+  :straight t              ; manually once you set up your system
+  :ensure t)
+
 (use-package doom-modeline
   :straight t
   :ensure t
