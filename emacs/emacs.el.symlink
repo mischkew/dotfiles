@@ -85,19 +85,75 @@ the beginning of the line."
   :ensure t
   :hook (after-init . doom-modeline-mode))
 
+;; better help views
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
 ;;
 ;; Org-Mode
 ;;
 
-(setq org-todo-keywords
-      '((sequence "TODO" "WIP" "|" "DONE")))
+(defun org-hooks ()
+  (org-indent-mode)
+  (visual-line-mode))
+  
+(use-package org
+  :config
+  (setq org-todo-keywords
+	'((sequence "TODO" "NEXT" "|" "DONE")
+	  (sequence "BACKLOG" "WIP" "HOLD" "|" "COMPLETED")))
+  (setq org-agenda-files
+	(list
+	 "~/Documents/workspace/notes/work"
+	 "~/Documents/workspace/notes/private"))
+  
+  (setq org-agenda-start-with-log-mode t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+  
+  ;; configure custom agenda views
+  (setq org-agenda-custom-commands
+   '(("d" "Dashboard"
+     ((agenda "" ((org-deadline-warning-days 7)))
+      (todo "NEXT"
+        ((org-agenda-overriding-header "Next Tasks")))))
 
-(setq org-agenda-files
-      (list
-       "~/Documents/workspace/notes/work"
-       "~/Documents/workspace/notes/private"))
+    ("n" "Next Tasks"
+     ((todo "NEXT"
+        ((org-agenda-overriding-header "Next Tasks")))))
 
-(global-set-key (kbd "C-c a") 'org-agenda)
+    ;; Low-effort next actions
+    ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+     ((org-agenda-overriding-header "Low Effort Tasks")
+      (org-agenda-max-todos 20)
+      (org-agenda-files org-agenda-files)))
+
+    ("w" "Workflow Status"
+      (todo "BACKLOG"
+            ((org-agenda-overriding-header "Project Backlog")
+             (org-agenda-todo-list-sublevels nil)
+             (org-agenda-files org-agenda-files)))
+      (todo "WIP"
+            ((org-agenda-overriding-header "Active Projects")
+             (org-agenda-files org-agenda-files)))
+      (todo "HOLD"
+            ((org-agenda-overriding-header "On Hold")
+             (org-agenda-files org-agenda-files)))
+      (todo "COMPLETED"
+            ((org-agenda-overriding-header "Completed Projects")
+             (org-agenda-files org-agenda-files))))))
+  
+  :hook 'org-hooks
+  :bind
+  ("C-c a" . 'org-agenda)
+  ("C-a" . 'smarter-move-beginning-of-line))
 
 ;;
 ;; Ivy - Command Completion
@@ -125,6 +181,31 @@ the beginning of the line."
   :init (ivy-rich-mode 1))
 
 ;;
+;; Projectile - Jumping between projects
+;;
+
+(use-package projectile
+  :straight t
+  :ensure t
+  :diminish projectile-mode
+  :config (projectile-mode)
+  ;; TODO set up ivy
+  ;; :custom
+  ;; ((projectile-completion-system . 'ivy))
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  (when (file-directory-p "~/Documents/workspace")
+    (setq projectile-project-search-path '("~/Documents/workspace")))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+(use-package counsel-projectile
+  :straight t
+  :ensure t
+  :config (counsel-projectile-mode))
+    
+
+;;
 ;; Which Key Mode - Get hints on keyboard shortcuts
 ;;
 
@@ -139,13 +220,47 @@ the beginning of the line."
 ;; FlyCheck
 ;;
 
-(straight-use-package 'flycheck)
+(use-package flycheck :straight t)
+
+;;
+;; Language Server Protocol
+;;
+
+;; (use-package lsp-mode :straight t :ensure t)
+
+;;
+;; Company
+;;
+
+(use-package company
+	     :straight t
+	     :diminish
+	     :config
+	     (add-hook 'after-init-hook 'global-company-mode)
+	     :bind
+	     ("S-SPC" . company-complete)) 
+
+;; (use-package company-lsp
+;; 	     :straight t
+;; 	     :config
+;; 	     (push 'company-lsp company-backends))
 
 ;;
 ;; Sh/ Bash
 ;;
 
 (add-hook 'sh-mode-hook 'flycheck-mode)
+
+;;
+;; C
+;;
+
+;; (use-package ccls
+;;   :straight t)
+
+;;
+;; Customization
+;;
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
