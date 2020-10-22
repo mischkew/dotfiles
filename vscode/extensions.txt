@@ -1,0 +1,14 @@
+dracula-theme.theme-dracula
+EditorConfig.EditorConfig
+esbenp.prettier-vscode
+foxundermoon.shell-format
+freakypie.code-python-isort
+hbenl.vscode-test-explorer
+lextudio.restructuredtext
+lfs.vscode-emacs-friendly
+ms-python.python
+msjsdiag.debugger-for-chrome
+njpwerner.autodocstring
+Orta.vscode-jest
+stkb.rewrap
+timonwong.shellcheck
