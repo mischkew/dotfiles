@@ -16,9 +16,10 @@ source "$DOTFILES/zsh/paths.zsh"
 # configure z extension (loaded via antibody)
 export _Z_OWNER="$USER"
 
-# load zsh plugins via antibody package manager
-source <(antibody init)
-antibody bundle <"$DOTFILES/antibody/bundles.txt"
+# TODO: hangs on linux
+# # load zsh plugins via antibody package manager
+#source <(antibody init)
+#antibody bundle <"$DOTFILES/antibody/bundles.txt"
 
 source "$DOTFILES/zsh/completion.zsh"
 source "$DOTFILES/zsh/config.zsh"
@@ -39,6 +40,12 @@ fpath=("$DOTFILES/zsh/pure" $fpath)
 autoload -U promptinit; promptinit
 prompt pure
 
+# syntax highlighting
+source "$DOTFILES/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+# command history substring search
+source "$DOTFILES/zsh/zsh-history-substring-search/zsh-history-substring-search.zsh"
+
 #
 # Auto Completion
 #
@@ -56,7 +63,7 @@ compinit -C # create a dump file if none exists
 # Load zsh modules of modules inside this dotfile repository
 #
 
-find "$DOTFILES" -name "*.zsh" -not -path "zsh" | while read -r module; do
+find "$DOTFILES" -name "*.zsh" -not -path "*/zsh/*" | while read -r module; do
   source "$module"
 done
 

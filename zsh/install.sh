@@ -33,3 +33,7 @@ else
   info '\t installing pure prompt'
   git submodule update --init "$(dirname $0)/pure"
 fi
+
+info '\t updating zsh completions and syntax highlighting'
+git submodule update --init "$(dirname $0)/zsh-syntax-highlighting"
+git submodule update --init "$(dirname $0)/zsh-history-substring-search"
