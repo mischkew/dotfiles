@@ -28,6 +28,13 @@ fpath=("$DOTFILES/functions" $fpath)
 autoload -U "$DOTFILES"/functions/*(:t)
 
 #
+# Extensions
+#
+
+# z - jump around
+source "$DOTFILES/zsh/z/z.sh"
+
+#
 # Auto Completion
 #
 
