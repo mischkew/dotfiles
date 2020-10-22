@@ -1,0 +1,31 @@
+#! /bin/bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+DOTFILES_ROOT=$(pwd -P)
+source "$DOTFILES_ROOT/scripts/utils.sh"
+
+PLATFORM="$(uname -s)"
+
+if [ "$PLATFORM" = "Linux" ]; then
+  eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+fi
+
+if ! command -v zsh >/dev/null 2>&1; then
+  fail 'zsh not installed'
+elif [ "$PLATFORM" = "Linux" ]; then
+  if ! grep "$(command -v zsh)" /etc/shells >/dev/null; then 
+    echo "$(command -v zsh)" | sudo tee -a /etc/shells
+    chsh -s "$(command -v zsh)"
+    make link
+
+    if [ "$SHELL" != "zsh" ]; then
+      zsh
+    fi
+  else
+    info 'already using zsh'
+  fi
+else
+  fail "don't know how to change the login shell to zsh on you platform ($PLATFORM)!"
+fi
