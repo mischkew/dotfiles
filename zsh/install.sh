@@ -26,3 +26,10 @@ else
   git submodule update --init "$(dirname $0)/z"
   touch "$HOME/.z"
 fi
+
+if command -v pure >/dev/null 2>&1; then
+  info '\t pure prompt is already installed'
+else
+  info '\t installing pure prompt'
+  git submodule update --init "$(dirname $0)/pure"
+fi

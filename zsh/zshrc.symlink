@@ -34,6 +34,11 @@ autoload -U "$DOTFILES"/functions/*(:t)
 # z - jump around
 source "$DOTFILES/zsh/z/z.sh"
 
+# pure prompt
+fpath=("$DOTFILES/zsh/pure" $fpath)
+autoload -U promptinit; promptinit
+prompt pure
+
 #
 # Auto Completion
 #
