@@ -5,6 +5,10 @@ source "$(dirname "$0")/../scripts/utils.sh"
 
 PLATFORM="$(uname -s)"
 
+if [ "$PLATFORM" = "Linux" ]; then
+  eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+fi
+
 #
 # install emacs
 #
@@ -16,6 +20,8 @@ elif ! command -v brew >/dev/null 2>&1; then
   return 1
 elif [ "$PLATFORM" = "Darwin" ]; then
   brew cask install emacs
+elif [ "$PLATFORM" = "Linux" ]; then
+  brew install emacs
 else
   fail "I do not know how to install emacs on your platform (${PLATFORM})!"
 fi
