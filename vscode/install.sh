@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DOTFILES_ROOT="$(dirname $0)/.."
+DOTFILES_ROOT="$(realpath "$(dirname "$0")/..")"
 
 if command -v code >/dev/null; then
   if [ "$(uname -s)" = "Darwin" ]; then
