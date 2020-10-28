@@ -100,11 +100,12 @@ the beginning of the line."
 ;; Org-Mode
 ;;
 
-(defun org-hooks ()
+(defun sm/org-hooks ()
   (org-indent-mode)
-  (visual-line-mode))
+  (visual-line-mode 1))
   
 (use-package org
+  :hook (org-mode . sm/org-hooks)
   :config
   (setq org-todo-keywords
 	'((sequence "TODO" "NEXT" "|" "DONE")
@@ -150,7 +151,7 @@ the beginning of the line."
             ((org-agenda-overriding-header "Completed Projects")
              (org-agenda-files org-agenda-files))))))
   
-  :hook 'org-hooks
+
   :bind
   ("C-c a" . 'org-agenda)
   ("C-a" . 'smarter-move-beginning-of-line))
