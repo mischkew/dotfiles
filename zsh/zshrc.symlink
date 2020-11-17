@@ -2,24 +2,18 @@
 
 # this dotfiles repository
 export DOTFILES="$HOME/.dotfiles"
-
 export PLATFORM="$(uname -s)"
+
+# if running commands from the VSCode terminal, then performing
+# editing in VSCode as well
 if [ "$TERM_PROGRAM" = "vscode" ]; then
   export EDITOR="code -w"
 else
-  export EDITOR="emacsclient -nw -a 'emacs -nw'"
+  export EDITOR="emacsclient -n"
 fi
 
 # set $PATH variables
 source "$DOTFILES/zsh/paths.zsh"
-
-# configure z extension (loaded via antibody)
-export _Z_OWNER="$USER"
-
-# TODO: hangs on linux
-# # load zsh plugins via antibody package manager
-#source <(antibody init)
-#antibody bundle <"$DOTFILES/antibody/bundles.txt"
 
 source "$DOTFILES/zsh/completion.zsh"
 source "$DOTFILES/zsh/config.zsh"
