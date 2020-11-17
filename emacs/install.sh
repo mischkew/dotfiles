@@ -36,16 +36,3 @@ else
     info 'install shellcheck'
     brew install shellcheck
 fi
-
-#
-# setup emacs daemon
-#
-
-if [ "$PLATFORM" = "Darwin" ]; then
-  link_file "$(dirname "$0")/emacs.daemon.plist" ~/Library/LaunchAgents/emacs.daemon.plist
-  info 'loading emacs daemon service'
-  launchctl load -w ~/Library/LaunchAgents/emacs.daemon.plist
-  launchctl start emacs.daemon
-else
-  fail 'no daemon launcher installed'
-fi

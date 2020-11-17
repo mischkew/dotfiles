@@ -1,3 +1,5 @@
+;; -*- mode: emacs-lisp; -*-
+
 ;; install straight.el package manager
 ;; See: https://github.com/raxod502/straight.el
 (defvar bootstrap-version)
@@ -71,6 +73,12 @@ the beginning of the line."
   (interactive)
   (shell-command-on-region (point) (mark) "pbcopy"))
 (global-set-key (kbd "C-c C-r") 'copy-to-clipboard)
+
+;; launch emacs server if not already running
+(use-package server
+  :ensure nil
+  :config
+  (unless (server-running-p) (server-start)))
 
 ;; hide minor mode titles in mode-bar
 (use-package diminish :straight t :ensure t)
