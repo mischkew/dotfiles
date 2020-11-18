@@ -95,6 +95,8 @@ the beginning of the line."
 
 ;; better help views
 (use-package helpful
+  :straight t
+  :ensure t
   :custom
   (counsel-describe-function-function #'helpful-callable)
   (counsel-describe-variable-function #'helpful-variable)
