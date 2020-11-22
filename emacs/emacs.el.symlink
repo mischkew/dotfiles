@@ -257,6 +257,36 @@ the beginning of the line."
 ;; 	     (push 'company-lsp company-backends))
 
 ;;
+;; Dired
+;;
+
+;; Cheatsheet
+;; C-o to open the file in another buffer, not losing focus of the dired buffer
+;; C-u to go up one directory
+;; j to jump to files inside the buffer by keywords
+(use-package dired
+  ;; don't install this package, it is shipped with emacs
+  :ensure nil
+  :bind (; global commands
+	 ("C-x C-j" . dired-jump)
+	 ; only within dired-mode
+	 :map dired-mode-map
+	 ("C-u" . dired-up-directory))
+  ;; dired shows files by running `ls` in the background
+  ;; we pass these options to:
+  ;; - list all files (al)
+  ;; - print a slash at the end of each directory (p)
+  ;; - show human readable filesize in K, M, G etc (h)
+  ;; ideally, we also want to show directories first with
+  ;; --group-directories-first, though this only works on gnu ls, which is not
+  ;; natively supported on OSX
+  :custom (dired-listing-switches "-alph")
+  ;; enable hide details minor mode by default in dired
+  ;; this hides all meta information and ony displays filennames
+  :hook (dired-mode . dired-hide-details-mode))
+
+
+;;
 ;; Sh/ Bash
 ;;
 
