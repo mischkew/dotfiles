@@ -1,5 +1,10 @@
 ;; -*- mode: emacs-lisp; -*-
 
+;; PATH setup for emacs
+;; note - this is different then the $PATH variable in the shell
+;; emacs uses this to locate executables
+(add-to-list 'exec-path "/usr/local/bin")
+
 ;; install straight.el package manager
 ;; See: https://github.com/raxod502/straight.el
 (defvar bootstrap-version)
@@ -299,6 +304,13 @@ the beginning of the line."
   ;; automatically activate this minor mode when in dired-mode
   :hook (dired-mode . all-the-icons-dired-mode))
 
+;;
+;; Terminal Emulator
+;;
+
+(use-package vterm
+  :straight t
+  :ensure t)
 
 ;;
 ;; Sh/ Bash
