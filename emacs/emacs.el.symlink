@@ -118,22 +118,22 @@ the beginning of the line."
 (defun sm/org-hooks ()
   (org-indent-mode)
   (visual-line-mode 1))
-  
+
 (use-package org
   :hook (org-mode . sm/org-hooks)
   :config
   (setq org-todo-keywords
 	'((sequence "TODO" "NEXT" "|" "DONE")
-	  (sequence "BACKLOG" "WIP" "HOLD" "|" "COMPLETED")))
+	  (sequence "WAIT" "PLAN" "BACKLOG" "WIP" "HOLD" "|" "COMPLETED")))
   (setq org-agenda-files
 	(list
 	 "~/Documents/workspace/notes/work"
 	 "~/Documents/workspace/notes/private"))
-  
+
   (setq org-agenda-start-with-log-mode t)
   (setq org-log-done 'time)
   (setq org-log-into-drawer t)
-  
+
   ;; configure custom agenda views
   (setq org-agenda-custom-commands
    '(("d" "Dashboard"
@@ -165,7 +165,7 @@ the beginning of the line."
       (todo "COMPLETED"
             ((org-agenda-overriding-header "Completed Projects")
              (org-agenda-files org-agenda-files))))))
-  
+
 
   :bind
   ("C-c a" . 'org-agenda)
@@ -219,7 +219,7 @@ the beginning of the line."
   :straight t
   :ensure t
   :config (counsel-projectile-mode))
-    
+
 
 ;;
 ;; Which Key Mode - Get hints on keyboard shortcuts
@@ -254,7 +254,7 @@ the beginning of the line."
 	     :config
 	     (add-hook 'after-init-hook 'global-company-mode)
 	     :bind
-	     ("S-SPC" . company-complete)) 
+	     ("S-SPC" . company-complete))
 
 ;; (use-package company-lsp
 ;; 	     :straight t
