@@ -1,2 +1,5 @@
 .DS_Store
 vendor/
+
+# ignore GitHub API key
+forge-github-key
