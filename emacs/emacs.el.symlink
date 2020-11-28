@@ -338,6 +338,24 @@ the beginning of the line."
   (editorconfig-mode 1))
 
 ;;
+;; Magit and Forge
+;;
+
+(use-package magit
+  :straight t
+  :ensure t
+  :bind ("C-c C-g" . magit)
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+;; NOTE: Make sure to configure a GitHub token before using this package!
+;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
+;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
+(use-package forge
+  :straight t
+  :ensure t)
+
+;;
 ;; Sh/ Bash
 ;;
 
