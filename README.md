@@ -9,3 +9,9 @@ Make `/usr/local` accessible:
 ```bash
 sudo chown -R $(whoami): /usr/local
 ```
+
+## Emacs
+
+### Additional Dependencies
+
+- CMake/ gcc for VTERM

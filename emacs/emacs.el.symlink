@@ -49,6 +49,13 @@
 (column-number-mode) ; display the column number in the modeline
 (global-display-line-numbers-mode 't) ; always enable line numbers
 
+;; Disable line numbers for some modes
+(dolist (mode '(vterm-mode-hook
+                term-mode-hook
+                shell-mode-hook
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
 ;; kill the current buffer with a single key combo
 (defun kill-this-buffer ()
   (interactive)
@@ -69,6 +76,9 @@ the beginning of the line."
       (move-beginning-of-line 1))))
 (global-set-key [remap move-beginning-of-line]
                 'smarter-move-beginning-of-line)
+
+;; find files in home directory automatically
+(setq default-directory "~/")
 
 ;; copy region to clipboard when running in terminal
 (defun copy-to-clipboard ()
@@ -146,7 +156,7 @@ the beginning of the line."
         ((org-agenda-overriding-header "Next Tasks")))))
 
     ;; Low-effort next actions
-    ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+    ("e" tags-todo "+TODO=\"NEXT\"+Effort<=1&+Effort>0"
      ((org-agenda-overriding-header "Low Effort Tasks")
       (org-agenda-max-todos 20)
       (org-agenda-files org-agenda-files)))
@@ -304,13 +314,28 @@ the beginning of the line."
   ;; automatically activate this minor mode when in dired-mode
   :hook (dired-mode . all-the-icons-dired-mode))
 
+
 ;;
 ;; Terminal Emulator
 ;;
 
 (use-package vterm
   :straight t
-  :ensure t)
+  :ensure t
+  :bind ("C-M-t" . vterm)
+  :config
+  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+  (setq vterm-max-scrollback 10000))
+
+;;
+;; Editor Config for basic auto-formatting
+;;
+
+(use-package editorconfig
+  :straight t
+  :ensure t
+  :config
+  (editorconfig-mode 1))
 
 ;;
 ;; Sh/ Bash
