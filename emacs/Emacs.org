@@ -1,0 +1,73 @@
+#+title: Sven's Emacs Configuration
+#+PROPERTY: header-args:emacs-lisp :tangle ./init-tangled.el :mkdirp yes
+
+* Todos
+
+** TODO vterm -> beginning of line regex with pure shell
+
+** TODO magit -> delete excess commit msg??
+** TODO replace ~/.emacs.d with this configuration
+
+** TODO rename ~/.emacs.el to ~/.emacs.d/init.el
+
+** TODO tangle to init2.el
+
+* Package System
+
+* Core Emacs Tweaks
+
+** Smarter beginning of line
+
+** Emacs as a server
+
+** Copy to OS-clipboard
+
+* UI
+
+** Basics
+
+** Theme
+
+** Modeline (=doom-modeline=)
+
+** Keybindings Discovery (=which-key=)
+
+** Selection Menus (=ivy= and =counsel=)
+
+** Better Emacs Documentation (=helpful=)
+
+* Org Mode
+
+** Basics
+
+** Babel Languages
+
+** Automatically Tangle
+
+** Structure Templates
+
+* Development
+
+** Languages
+
+*** Language Server Protocol IDE (=lsp-mode=)
+
+*** Debugging with Debugger Adapter Protocol (=dap-mode=)
+
+*** C
+
+** Auto Completion (=company-mode=)
+
+** Project Workspaces (=projectile=)
+
+** Source Control (=magit= and =forge=)
+
+* Terminal (=vterm=)
+
+* Navigation (=dired=)
+
+* Credits
+
+This configuration has been inspired by:
+
+- [[https://github.com/daviwil][David Wilson]] and his [[https://github.com/daviwil/emacs-from-scratch/blob/master/Emacs.org][Emacs from Scratch Configuration]]
