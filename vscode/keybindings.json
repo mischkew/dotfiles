@@ -1,16 +1,6 @@
 // Place your key bindings in this file to override the defaultsauto[]
 [
   {
-    "key": "meta+d",
-    "command": "editor.action.addSelectionToNextFindMatch",
-    "when": "editorFocus"
-  },
-  {
-    "key": "ctrl+d",
-    "command": "-editor.action.addSelectionToNextFindMatch",
-    "when": "editorFocus"
-  },
-  {
     "key": "shift+meta+d",
     "command": "editor.action.moveSelectionToNextFindMatch",
     "when": "editorFocus"
