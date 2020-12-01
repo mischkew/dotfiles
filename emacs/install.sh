@@ -6,7 +6,7 @@ source "$(dirname "$0")/../scripts/utils.sh"
 PLATFORM="$(uname -s)"
 
 if [ "$PLATFORM" = "Linux" ]; then
-  eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 #
