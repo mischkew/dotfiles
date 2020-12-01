@@ -36,3 +36,9 @@ else
     info 'install shellcheck'
     brew install shellcheck
 fi
+
+#
+# Link this folder as the $HOME/.emacs.d to make this configuration available
+#
+
+link_file "$(realpath .)" "$HOME/.emacs.d"
