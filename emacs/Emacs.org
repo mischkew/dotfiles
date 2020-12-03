@@ -4,10 +4,6 @@
 * Todos
 
 ** TODO magit -> delete excess commit msg??
-** TODO replace ~/.emacs.d with this configuration
-
-** TODO rename ~/.emacs.el to ~/.emacs.d/init.el
-
 ** TODO tangle to init2.el
 
 * Package System
