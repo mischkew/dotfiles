@@ -2,11 +2,22 @@
 #
 # This script creates symlinks for all *.symlink files in $HOME
 
-cd "$(dirname "$0")/.."
-DOTFILES_ROOT=$(pwd -P)
-
 set -e
-source "$DOTFILES_ROOT/scripts/utils.sh"
+
+# change to the root directory
+cd "$(dirname "$0")/.."
+
+# hardcode root location to ~/.dotfiles
+# we will symlink the root directory to this location
+DOTFILES_ROOT="$HOME/.dotfiles"
+
+# shellcheck disable=SC1090
+source "${PWD}/scripts/utils.sh"
+
+# links this repositories' root folder to ~/.dotfiles
+# skips if the folder already exists or if the repository
+# is cloned to ~/.dotfiles already
+link_file "$PWD" "$DOTFILES_ROOT"
 
 install_dotfiles() {
   info 'installing dotfiles'
