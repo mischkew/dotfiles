@@ -1,64 +1,474 @@
 #+title: Sven's Emacs Configuration
-#+PROPERTY: header-args:emacs-lisp :tangle ./init-tangled.el :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 
-* Todos
+This is Sven's literate emacs configuration, yay.
+This file is tangled into =init.el= everytime it is saved within Emacs Org Mode.
 
-** TODO magit -> delete excess commit msg??
-** TODO tangle to init2.el
+* Manual Steps
+
+- =M-x all-the-icons-install-fonts= (for modeline icons)
+- Setup github auth token for =magit=, see =Source Control= section
+
+* Paths and Global Custom Variables
+
+When emacs is launched via the GUI, our shell configured =$PATH= variable from =.zshrc= is not inherited. This might cause issues when searching for binaries installed with =homebrew= or in other user defined paths, i.e. to run dependencies of inferior mode processes or when building packages.
+
+#+begin_src emacs-lisp
+;; note - this is different then the $PATH variable in the shell
+(add-to-list 'exec-path "/usr/local/bin")
+#+end_src
+
+Use =$HOME= as the default path for finding files, i.e. with =C-x C-f=.
+
+#+begin_src emacs-lisp
+(setq default-directory "~/")
+#+end_src
+
+Paths for sourcing org mode agenda files
+
+#+begin_src emacs-lisp
+(setq sm/agenda-folders (list
+	 "~/Documents/workspace/notes/work"
+	 "~/Documents/workspace/notes/private"))
+#+end_src
+
+Path for general coding projects
+
+#+begin_src emacs-lisp
+(setq sm/workspace-path "~/Documents/workspace")
+#+end_src
 
 * Package System
 
+We use [[https://github.com/raxod502/straight.el][straight.el]] as our package manager together with [[https://github.com/jwiegley/use-package][use-package]] for package configurations. =straight.el= manages local git repositories and can install from almost any source, as well as the standard emacs repositories. This gives useful freedom if certain packages fail to build, we can just go into their local git repository and perform the setup manually.
+
+#+begin_src emacs-lisp
+;; install straight with straight and only bootstrap once
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+;; activate use-package integration
+(straight-use-package 'use-package)
+
+;; implictly always provide the :straight t keywords to use-package so that we don't have to
+;; we will only explictly set :straight nil for system packages to avoid downloading them :)
+(setq straight-use-package-by-default t)
+#+end_src
+
 * Core Emacs Tweaks
+
+** Kill current buffer
+We like to kill buffers quickly, without having to confirm to emacs. This adds a new keybinding for this custom behaviour.
+
+#+begin_src emacs-lisp
+(defun kill-this-buffer ()
+  (interactive)
+  (kill-buffer (buffer-name)))
+
+(global-set-key (kbd "C-x C-k") 'kill-this-buffer)
+#+end_src
 
 ** Smarter beginning of line
 
+When editing code the default behavior for =C-a= is pretty dumb, it goes to the beginning of the line, but not to the first character of the line. We want to have both behaviours. This custom function remaps the beginning of line function to toggle between the first character and the beginning of the line.
+
+#+begin_src emacs-lisp
+(defun smarter-move-beginning-of-line ()
+"Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line."
+  (interactive)
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+
+(global-set-key [remap move-beginning-of-line]
+                'smarter-move-beginning-of-line)
+#+end_src
 ** Emacs as a server
+Launch this Emacs process as a server. This allows to connect to the running instance from terminals via =emacsclient=. In our =.zshrc=, we can use =edit= or =ec= to achieve that. This will open a new buffer in the running emacs server which is fast.
+
+This only launches a server if the server is not already running (to prevent weirdness...)
+
+#+begin_src emacs-lisp
+(use-package server
+  :ensure nil
+  :config
+  (unless (server-running-p) (server-start)))
+#+end_src
 
 ** Copy to OS-clipboard
+
+When running emacs from a tty, it is difficult to get the current selection into the operating system's clipoard. We provide a custom function to copy the contents.
+
+#+begin_src emacs-lisp
+(defun copy-to-clipboard ()
+  "Executes a shell command which takes the current region as stdin
+  and copies it to the OS-clipboard outside of the emacs kill-ring we
+  use `pbcopy`. On my system this is an alias for xlip on linux"
+  (interactive)
+  (shell-command-on-region (point) (mark) "pbcopy"))
+
+(global-set-key (kbd "C-c C-r") 'copy-to-clipboard)
+#+end_src
 
 * UI
 
 ** Basics
 
-** Theme
+Make emacs appear more minimal by disabling bloat UI widgets etc.
+
+#+begin_src emacs-lisp
+(setq inhibit-startup-message t) ; don't show the emacs startup screen
+(scroll-bar-mode -1) ; disable visible scrollbar
+(tool-bar-mode -1) ; disable the top toolbar
+(tooltip-mode -1) ; disable any tooltips
+(set-fringe-mode 10) ; set some margin
+(menu-bar-mode -1) ; disable the top menu bar
+(column-number-mode) ; display the column number in the modeline
+(global-display-line-numbers-mode t) ; always enable line numbers
+
+;; Disable line numbers for some modes
+(dolist (mode '(vterm-mode-hook
+                term-mode-hook
+                shell-mode-hook
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+#+end_src
+
+** Theme (=doom-themes= with =doom-dracula=)
+
+Superior [[https://github.com/hlissner/emacs-doom-themes][doom themes]] for struggle-free aesthetics ;)
+
+#+begin_src emacs-lisp
+(use-package doom-themes
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-dracula t)
+
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
+#+end_src
 
 ** Modeline (=doom-modeline=)
 
+A simple, yet functional and nice-looking modeline. We need to download the icons manually once with =M-x all-the-icons-install-fonts=.
+
+#+begin_src emacs-lisp
+(use-package doom-modeline
+  :hook (after-init . doom-modeline-mode))
+
+(use-package all-the-icons) ; run M-x all-the-icons-install-fonts
+#+end_src
+
 ** Keybindings Discovery (=which-key=)
+
+When hitting prefixes, Emacs will now show us a list of possible keybinding completions.
+
+#+begin_src emacs-lisp
+(use-package which-key
+  :diminish which-key-mode
+  :init (which-key-mode)
+  :config (setq which-key-idle-delay 0.5))
+#+end_src
 
 ** Selection Menus (=ivy= and =counsel=)
 
+#+begin_src emacs-lisp
+(use-package ivy
+  :diminish
+  :config
+  (ivy-mode 1))
+
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+	 ("C-x b" . counsel-ibuffer)
+	 ("C-x C-f" . counsel-find-file)
+	 :map minibuffer-local-map
+	 ("C-r" . 'counsel-minibuffer-history)))
+
+(use-package ivy-rich
+  :diminish
+  :init (ivy-rich-mode 1))
+#+end_src
+
 ** Better Emacs Documentation (=helpful=)
+
+The [[https://github.com/Wilfred/helpful][helpful package]] makes the documentation view for variables and functions more beefy but linking code examples, highlighting syntax and showing reference usage.
+
+#+begin_src emacs-lisp
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+#+end_src
+
 
 * Org Mode
 
 ** Basics
 
+#+begin_src emacs-lisp
+(defun sm/org-hooks ()
+  (org-indent-mode)
+  (visual-line-mode 1))
+
+(use-package org
+  :hook (org-mode . sm/org-hooks)
+  :config
+  (setq org-todo-keywords
+	'((sequence "TODO" "NEXT" "|" "DONE")
+	  (sequence "WAIT" "PLAN" "BACKLOG" "WIP" "HOLD" "|" "COMPLETED")))
+  (setq org-agenda-files 'sm/agenda-files)
+
+  (setq org-agenda-start-with-log-mode t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+
+  ;; configure custom agenda views
+  (setq org-agenda-custom-commands
+   '(("d" "Dashboard"
+     ((agenda "" ((org-deadline-warning-days 7)))
+      (todo "NEXT"
+        ((org-agenda-overriding-header "Next Tasks")))))
+
+    ("n" "Next Tasks"
+     ((todo "NEXT"
+        ((org-agenda-overriding-header "Next Tasks")))))
+
+    ;; Low-effort next actions
+    ("e" tags-todo "+TODO=\"NEXT\"+Effort<=1&+Effort>0"
+     ((org-agenda-overriding-header "Low Effort Tasks")
+      (org-agenda-max-todos 20)
+      (org-agenda-files org-agenda-files)))
+
+    ("w" "Workflow Status"
+      (todo "BACKLOG"
+            ((org-agenda-overriding-header "Project Backlog")
+             (org-agenda-todo-list-sublevels nil)
+             (org-agenda-files org-agenda-files)))
+      (todo "WIP"
+            ((org-agenda-overriding-header "Active Projects")
+             (org-agenda-files org-agenda-files)))
+      (todo "HOLD"
+            ((org-agenda-overriding-header "On Hold")
+             (org-agenda-files org-agenda-files)))
+      (todo "COMPLETED"
+            ((org-agenda-overriding-header "Completed Projects")
+             (org-agenda-files org-agenda-files))))))
+
+
+  :bind
+  ("C-c a" . 'org-agenda)
+  ("C-a" . 'smarter-move-beginning-of-line))
+#+end_src
+
 ** Babel Languages
+
+
 
 ** Automatically Tangle
 
+#+begin_src emacs-lisp
+(defun sm/org-babel-tangle-config ()
+  (when (string-equal (file-truename (file-name-directory (buffer-file-name)))
+                      (file-truename (expand-file-name user-emacs-directory)))
+    ;; Dynamic scoping to the rescue
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle))))
+
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'sm/org-babel-tangle-config)))
+#+end_src
+
 ** Structure Templates
+
+#+begin_src emacs-lisp
+(require 'org-tempo)
+
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
+#+end_src
 
 * Development
 
 ** Languages
 
-*** Language Server Protocol IDE (=lsp-mode=)
+*** TODO Language Server Protocol IDE (=lsp-mode=)
 
-*** Debugging with Debugger Adapter Protocol (=dap-mode=)
+*** TODO Debugging with Debugger Adapter Protocol (=dap-mode=)
 
-*** C
+*** TODO C
 
-** Auto Completion (=company-mode=)
+** TODO Auto Completion (=company-mode=)
+
+** Code Formatting
+
+*** Editconfig
+
+#+begin_src emacs-lisp
+(use-package editorconfig
+  :config
+  (editorconfig-mode 1))
+#+end_src
 
 ** Project Workspaces (=projectile=)
 
+Jump between projects, find files inside a project easily, run tests, compile and other stuff...
+
+#+begin_src emacs-lisp
+  (use-package projectile
+    :diminish projectile-mode
+    :config (projectile-mode)
+    :custom ((projectile-completion-system  'ivy))
+    :bind-keymap
+    ("C-c p" . projectile-command-map)
+    :init
+    (when (file-directory-p sm/workspace-path)
+      (setq projectile-project-search-path (list sm/workspace-path)))
+    (setq projectile-switch-project-action #'projectile-dired))
+
+  (use-package counsel-projectile
+    :config (counsel-projectile-mode))
+
+#+end_src
+
 ** Source Control (=magit= and =forge=)
+
+#+begin_src emacs-lisp
+(use-package magit
+  :bind ("C-c C-g" . magit)
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+;; NOTE: Make sure to configure a GitHub token before using this package!
+;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
+;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
+(use-package forge)
+#+end_src
 
 * Terminal (=vterm=)
 
+#+begin_src emacs-lisp
+(use-package vterm
+  :bind ("C-M-t" . vterm)
+  :config
+  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+  (setq vterm-max-scrollback 10000))
+#+end_src
+
 * Navigation (=dired=)
+
+** Key Bindings
+
+*** Navigation
+
+- =n= - next line
+- =p= - previous line
+- =j= - jump to file in buffer
+- =RET= - select file or directory
+- =C-u= - go to parent directory
+- =S-RET= - Open file in "other" window
+- =M-RET= - Show file in other window without focusing (previewing files)
+- =g o= (=dired-view-file=) - Open file but in a "preview" mode, close with =q=
+- =g= Refresh the buffer with =revert-buffer= after changing configuration (and after filesystem changes!)
+
+*** Marking files
+
+- =m= - Marks a file
+- =u= - Unmarks a file
+- =U= - Unmarks all files in buffer
+- =* t= - Inverts marked files in buffer
+- =% m= - Mark files in buffer using regular expression
+- =*= - Lots of other auto-marking functions
+- =k= - "Kill" marked items (refresh buffer with =g= to get them back)
+- Many operations can be done on a single file if there are no active marks!
+
+*** Copying and Renaming files
+
+- =C= - Copy marked files (or if no files are marked, the current file)
+- Copying single and multiple files
+- =U= - Unmark all files in buffer
+- =R= - Rename marked files, renaming multiple is a move!
+- =% R= - Rename based on regular expression: =^test= , =old-\&=
+
+*Power command*: =C-x C-q= (=dired-toggle-read-only=) - Makes all file names in the buffer editable directly to rename them!  Press =Z Z= to confirm renaming or =Z Q= to abort.
+
+*** Deleting files
+
+- =D= - Delete marked file
+- =d= - Mark file for deletion
+- =x= - Execute deletion for marks
+- =delete-by-moving-to-trash= - Move to trash instead of deleting permanently
+
+*** Creating and extracting archives
+
+- =Z= - Compress or uncompress a file or folder to (=.tar.gz=)
+- =c= - Compress selection to a specific file
+- =dired-compress-files-alist= - Bind compression commands to file extension
+
+*** Other common operations
+
+- =T= - Touch (change timestamp)
+- =M= - Change file mode
+- =O= - Change file owner
+- =G= - Change file group
+- =S= - Create a symbolic link to this file
+- =L= - Load an Emacs Lisp file into Emacs
+
+** Configuration
+
+#+begin_src emacs-lisp
+(use-package dired
+  ;; don't install this package, it is shipped with emacs
+  :straight nil
+  :bind (; global commands
+	 ("C-x C-j" . dired-jump)
+	 ; only within dired-mode
+	 :map dired-mode-map
+	 ("C-u" . dired-up-directory))
+  ;; dired shows files by running `ls` in the background
+  ;; we pass these options to:
+  ;; - list all files (al)
+  ;; - print a slash at the end of each directory (p)
+  ;; - show human readable filesize in K, M, G etc (h)
+  ;; ideally, we also want to show directories first with
+  ;; --group-directories-first, though this only works on gnu ls, which is not
+  ;; natively supported on OSX
+  :custom (dired-listing-switches "-alph")
+  ;; enable hide details minor mode by default in dired
+  ;; this hides all meta information and ony displays filennames
+  :hook (dired-mode . dired-hide-details-mode))
+
+;; dired normally launches a new buffer for each folder opened
+;; this clutters the buffer list, we only want to keep a single
+;; dired buffer around
+(use-package dired-single)
+
+;; show icon thumbnails next to files
+(use-package all-the-icons-dired
+  ;; automatically activate this minor mode when in dired-mode
+  :hook (dired-mode . all-the-icons-dired-mode))
+#+end_src
 
 * Credits
 

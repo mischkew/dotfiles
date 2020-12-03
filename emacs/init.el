@@ -1,12 +1,15 @@
-;; -*- mode: emacs-lisp; -*-
-
-;; PATH setup for emacs
 ;; note - this is different then the $PATH variable in the shell
-;; emacs uses this to locate executables
 (add-to-list 'exec-path "/usr/local/bin")
 
-;; install straight.el package manager
-;; See: https://github.com/raxod502/straight.el
+(setq default-directory "~/")
+
+(setq sm/agenda-folders (list
+	 "~/Documents/workspace/notes/work"
+	 "~/Documents/workspace/notes/private"))
+
+(setq sm/workspace-path "~/Documents/workspace")
+
+;; install straight with straight and only bootstrap once
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -19,51 +22,20 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+
+;; activate use-package integration
 (straight-use-package 'use-package)
 
-;;
-;; Color Scheme
-;;
+;; implictly always provide the :straight t keywords to use-package so that we don't have to
+;; we will only explictly set :straight nil for system packages to avoid downloading them :)
+(setq straight-use-package-by-default t)
 
-(use-package doom-themes
-  :straight t
-  :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-dracula t)
-
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config))
-
-;;
-;; Global Settings and Keyboard Shortcuts
-;;
-
-(setq inhibit-startup-message t) ; don't show the emacs startup screen
-(scroll-bar-mode -1) ; disable visible scrollbar
-(tool-bar-mode -1) ; disable the top toolbar
-(tooltip-mode -1) ; disable any tooltips
-(set-fringe-mode 10) ; set some margin
-(menu-bar-mode -1) ; disable the top menu bar
-(column-number-mode) ; display the column number in the modeline
-(global-display-line-numbers-mode 't) ; always enable line numbers
-
-;; Disable line numbers for some modes
-(dolist (mode '(vterm-mode-hook
-                term-mode-hook
-                shell-mode-hook
-                eshell-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
-
-;; kill the current buffer with a single key combo
 (defun kill-this-buffer ()
   (interactive)
   (kill-buffer (buffer-name)))
+
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
 
-;; toggle between moving to beginning of line and first non-whitespace
-;; character
 (defun smarter-move-beginning-of-line ()
 "Move point to the first non-whitespace character on this line.
 If point is already there, move to the beginning of the line.
@@ -74,44 +46,77 @@ the beginning of the line."
     (back-to-indentation)
     (when (= orig-point (point))
       (move-beginning-of-line 1))))
+
 (global-set-key [remap move-beginning-of-line]
                 'smarter-move-beginning-of-line)
 
-;; find files in home directory automatically
-(setq default-directory "~/")
+(use-package server
+  :ensure nil
+  :config
+  (unless (server-running-p) (server-start)))
 
-;; copy region to clipboard when running in terminal
 (defun copy-to-clipboard ()
   "Executes a shell command which takes the current region as stdin
   and copies it to the OS-clipboard outside of the emacs kill-ring we
   use `pbcopy`. On my system this is an alias for xlip on linux"
   (interactive)
   (shell-command-on-region (point) (mark) "pbcopy"))
+
 (global-set-key (kbd "C-c C-r") 'copy-to-clipboard)
 
-;; launch emacs server if not already running
-(use-package server
-  :ensure nil
+(setq inhibit-startup-message t) ; don't show the emacs startup screen
+(scroll-bar-mode -1) ; disable visible scrollbar
+(tool-bar-mode -1) ; disable the top toolbar
+(tooltip-mode -1) ; disable any tooltips
+(set-fringe-mode 10) ; set some margin
+(menu-bar-mode -1) ; disable the top menu bar
+(column-number-mode) ; display the column number in the modeline
+(global-display-line-numbers-mode t) ; always enable line numbers
+
+;; Disable line numbers for some modes
+(dolist (mode '(vterm-mode-hook
+                term-mode-hook
+                shell-mode-hook
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+(use-package doom-themes
   :config
-  (unless (server-running-p) (server-start)))
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-dracula t)
 
-;; hide minor mode titles in mode-bar
-(use-package diminish :straight t :ensure t)
-
-;; pimp the modeline
-(use-package all-the-icons ; run M-x all-the-icons-install-fonts
-  :straight t              ; manually once you set up your system
-  :ensure t)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
 
 (use-package doom-modeline
-  :straight t
-  :ensure t
   :hook (after-init . doom-modeline-mode))
 
-;; better help views
+(use-package all-the-icons) ; run M-x all-the-icons-install-fonts
+
+(use-package which-key
+  :diminish which-key-mode
+  :init (which-key-mode)
+  :config (setq which-key-idle-delay 0.5))
+
+(use-package ivy
+  :diminish
+  :config
+  (ivy-mode 1))
+
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+	 ("C-x b" . counsel-ibuffer)
+	 ("C-x C-f" . counsel-find-file)
+	 :map minibuffer-local-map
+	 ("C-r" . 'counsel-minibuffer-history)))
+
+(use-package ivy-rich
+  :diminish
+  :init (ivy-rich-mode 1))
+
 (use-package helpful
-  :straight t
-  :ensure t
   :custom
   (counsel-describe-function-function #'helpful-callable)
   (counsel-describe-variable-function #'helpful-variable)
@@ -120,10 +125,6 @@ the beginning of the line."
   ([remap describe-command] . helpful-command)
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
-
-;;
-;; Org-Mode
-;;
 
 (defun sm/org-hooks ()
   (org-indent-mode)
@@ -135,10 +136,7 @@ the beginning of the line."
   (setq org-todo-keywords
 	'((sequence "TODO" "NEXT" "|" "DONE")
 	  (sequence "WAIT" "PLAN" "BACKLOG" "WIP" "HOLD" "|" "COMPLETED")))
-  (setq org-agenda-files
-	(list
-	 "~/Documents/workspace/notes/work"
-	 "~/Documents/workspace/notes/private"))
+  (setq org-agenda-files 'sm/agenda-files)
 
   (setq org-agenda-start-with-log-mode t)
   (setq org-log-done 'time)
@@ -181,107 +179,58 @@ the beginning of the line."
   ("C-c a" . 'org-agenda)
   ("C-a" . 'smarter-move-beginning-of-line))
 
-;;
-;; Ivy - Command Completion
-;;
+(defun sm/org-babel-tangle-config ()
+  (when (string-equal (file-truename (file-name-directory (buffer-file-name)))
+                      (file-truename (expand-file-name user-emacs-directory)))
+    ;; Dynamic scoping to the rescue
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle))))
 
-(use-package ivy
-  :straight t
-  :ensure t
-  :diminish
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'sm/org-babel-tangle-config)))
+
+(require 'org-tempo)
+
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
+
+(use-package editorconfig
   :config
-  (ivy-mode 1))
-
-(use-package counsel
-  :straight t
-  :bind (("M-x" . counsel-M-x)
-	 ("C-x b" . counsel-ibuffer)
-	 ("C-x C-f" . counsel-find-file)
-	 :map minibuffer-local-map
-	 ("C-r" . 'counsel-minibuffer-history)))
-
-(use-package ivy-rich
-  :straight t
-  :ensure t
-  :diminish
-  :init (ivy-rich-mode 1))
-
-;;
-;; Projectile - Jumping between projects
-;;
+  (editorconfig-mode 1))
 
 (use-package projectile
-  :straight t
-  :ensure t
   :diminish projectile-mode
   :config (projectile-mode)
-  ;; TODO set up ivy
-  ;; :custom
-  ;; ((projectile-completion-system . 'ivy))
+  :custom ((projectile-completion-system  'ivy))
   :bind-keymap
   ("C-c p" . projectile-command-map)
   :init
-  (when (file-directory-p "~/Documents/workspace")
-    (setq projectile-project-search-path '("~/Documents/workspace")))
+  (when (file-directory-p sm/workspace-path)
+    (setq projectile-project-search-path (list sm/workspace-path)))
   (setq projectile-switch-project-action #'projectile-dired))
 
 (use-package counsel-projectile
-  :straight t
-  :ensure t
   :config (counsel-projectile-mode))
 
+(use-package magit
+  :bind ("C-c C-g" . magit)
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
-;;
-;; Which Key Mode - Get hints on keyboard shortcuts
-;;
+;; NOTE: Make sure to configure a GitHub token before using this package!
+;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
+;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
+(use-package forge)
 
-(use-package which-key
-  :straight t
-  :ensure t
-  :diminish which-key-mode
-  :init (which-key-mode)
-  :config (setq which-key-idle-delay 0.5))
+(use-package vterm
+  :bind ("C-M-t" . vterm)
+  :config
+  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+  (setq vterm-max-scrollback 10000))
 
-;;
-;; FlyCheck
-;;
-
-(use-package flycheck :straight t)
-
-;;
-;; Language Server Protocol
-;;
-
-;; (use-package lsp-mode :straight t :ensure t)
-
-;;
-;; Company
-;;
-
-(use-package company
-	     :straight t
-	     :diminish
-	     :config
-	     (add-hook 'after-init-hook 'global-company-mode)
-	     :bind
-	     ("S-SPC" . company-complete))
-
-;; (use-package company-lsp
-;; 	     :straight t
-;; 	     :config
-;; 	     (push 'company-lsp company-backends))
-
-;;
-;; Dired
-;;
-
-;; Cheatsheet
-;; C-o to open the file in another buffer, not losing focus of the dired buffer
-;; C-u to go up one directory
-;; j to jump to files inside the buffer by keywords
 (use-package dired
   ;; don't install this package, it is shipped with emacs
-  :ensure nil
+  :straight nil
   :bind (; global commands
 	 ("C-x C-j" . dired-jump)
 	 ; only within dired-mode
@@ -303,85 +252,9 @@ the beginning of the line."
 ;; dired normally launches a new buffer for each folder opened
 ;; this clutters the buffer list, we only want to keep a single
 ;; dired buffer around
-(use-package dired-single
-  :ensure t
-  :straight t)
+(use-package dired-single)
 
 ;; show icon thumbnails next to files
 (use-package all-the-icons-dired
-  :ensure t
-  :straight t
   ;; automatically activate this minor mode when in dired-mode
   :hook (dired-mode . all-the-icons-dired-mode))
-
-
-;;
-;; Terminal Emulator
-;;
-
-(use-package vterm
-  :straight t
-  :ensure t
-  :bind ("C-M-t" . vterm)
-  :config
-  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
-  (setq vterm-max-scrollback 10000))
-
-;;
-;; Editor Config for basic auto-formatting
-;;
-
-(use-package editorconfig
-  :straight t
-  :ensure t
-  :config
-  (editorconfig-mode 1))
-
-;;
-;; Magit and Forge
-;;
-
-(use-package magit
-  :straight t
-  :ensure t
-  :bind ("C-c C-g" . magit)
-  :custom
-  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-
-;; NOTE: Make sure to configure a GitHub token before using this package!
-;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
-;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
-(use-package forge
-  :straight t
-  :ensure t)
-
-;;
-;; Sh/ Bash
-;;
-
-(add-hook 'sh-mode-hook 'flycheck-mode)
-
-;;
-;; C
-;;
-
-;; (use-package ccls
-;;   :straight t)
-
-;;
-;; Customization
-;;
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("24714e2cb4a9d6ec1335de295966906474fdb668429549416ed8636196cb1441" default)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
