@@ -3,8 +3,6 @@
 
 * Todos
 
-** TODO vterm -> beginning of line regex with pure shell
-
 ** TODO magit -> delete excess commit msg??
 ** TODO replace ~/.emacs.d with this configuration
 
