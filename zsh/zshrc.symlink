@@ -9,7 +9,7 @@ export PLATFORM="$(uname -s)"
 if [ "$TERM_PROGRAM" = "vscode" ]; then
   export EDITOR="code -w"
 else
-  export EDITOR="emacsclient -n"
+  export EDITOR="emacsclient -n -a 'code'"
 fi
 
 # set $PATH variables
@@ -60,6 +60,3 @@ compinit -C # create a dump file if none exists
 find "$DOTFILES" -name "*.zsh" -not -path "*/zsh/*" | while read -r module; do
   source "$module"
 done
-
-
-
