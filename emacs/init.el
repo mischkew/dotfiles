@@ -3,7 +3,7 @@
 
 (setq default-directory "~/")
 
-(setq sm/agenda-folders (list
+(setq sm/agenda-files (list
 	 "~/Documents/workspace/notes/work"
 	 "~/Documents/workspace/notes/private"))
 
@@ -136,7 +136,7 @@ the beginning of the line."
   (setq org-todo-keywords
 	'((sequence "TODO" "NEXT" "|" "DONE")
 	  (sequence "WAIT" "PLAN" "BACKLOG" "WIP" "HOLD" "|" "COMPLETED")))
-  (setq org-agenda-files 'sm/agenda-files)
+  (setq org-agenda-files sm/agenda-files)
 
   (setq org-agenda-start-with-log-mode t)
   (setq org-log-done 'time)

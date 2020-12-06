@@ -27,7 +27,7 @@ Use =$HOME= as the default path for finding files, i.e. with =C-x C-f=.
 Paths for sourcing org mode agenda files
 
 #+begin_src emacs-lisp
-(setq sm/agenda-folders (list
+(setq sm/agenda-files (list
 	 "~/Documents/workspace/notes/work"
 	 "~/Documents/workspace/notes/private"))
 #+end_src
@@ -238,7 +238,7 @@ The [[https://github.com/Wilfred/helpful][helpful package]] makes the documentat
   (setq org-todo-keywords
 	'((sequence "TODO" "NEXT" "|" "DONE")
 	  (sequence "WAIT" "PLAN" "BACKLOG" "WIP" "HOLD" "|" "COMPLETED")))
-  (setq org-agenda-files 'sm/agenda-files)
+  (setq org-agenda-files sm/agenda-files)
 
   (setq org-agenda-start-with-log-mode t)
   (setq org-log-done 'time)
