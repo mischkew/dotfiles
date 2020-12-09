@@ -5,5 +5,6 @@
 # See: https://carlosbecker.com/posts/speeding-up-zsh
 pyenv() {
   eval "$(command pyenv init -)"
+  eval "$(command pyenv virtualenv-init -)"
   pyenv "$@"
 }
