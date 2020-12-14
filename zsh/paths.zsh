@@ -1,7 +1,10 @@
 #! /bin/zsh
 
+# usr local binaries
+export PATH="/usr/local/bin:${PATH}"
+
 # add emacs binaries
-export PATH="$PATH:~/.emacs.d/bin"
+export PATH="${PATH}:~/.emacs.d/bin"
 
 # add cuda libs
 export CUDA_PATH=/usr/local/cuda
