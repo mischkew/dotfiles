@@ -8,6 +8,8 @@ This file is tangled into =init.el= everytime it is saved within Emacs Org Mode.
 
 - =M-x all-the-icons-install-fonts= (for modeline icons)
 - Setup github auth token for =magit=, see =Source Control= section
+- Install local tools (on UNIX based systems) like =fd= and =ripgrep=
+- For c-development =bear=, =clangd= and =lldb-vscode= are required. See the =C= folder in the dotfiles.
 
 * Paths and Global Custom Variables
 
@@ -111,6 +113,14 @@ This only launches a server if the server is not already running (to prevent wei
   :ensure nil
   :config
   (unless (server-running-p) (server-start)))
+#+end_src
+
+** Custom Keybindings and Saving Keystrokes via =hydra=
+
+[[https://github.com/abo-abo/hydra][Hydra]] is a package to avoid typing key prefixes too much. It has integration with other tools, like the debugger interface =dap-mode= or we can setup our own configuration.
+
+#+begin_src emacs-lisp
+(use-package hydra)
 #+end_src
 
 ** Copy to OS-clipboard
@@ -323,17 +333,151 @@ The [[https://github.com/Wilfred/helpful][helpful package]] makes the documentat
 
 ** Languages
 
-*** TODO Language Server Protocol IDE (=lsp-mode=)
+*** Language Server Protocol IDE (=lsp-mode=)
 
-*** TODO Debugging with Debugger Adapter Protocol (=dap-mode=)
+We use the excellent [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]] to enable IDE-like functionality for many different programming languages via "language servers" that speak the [[https://microsoft.github.io/language-server-protocol/][Language Server Protocol]].  Before trying to set up =lsp-mode= for a particular language, check out the [[https://emacs-lsp.github.io/lsp-mode/page/languages/][documentation for your language]] so that you can learn which language servers are available and how to install them.
 
-*** TODO C
+The =lsp-keymap-prefix= setting enables you to define a prefix for where =lsp-mode='s default keybindings will be added. The =which-key= integration adds helpful descriptions of the various keys so you should be able to learn a lot just by pressing =C-c l= in a =lsp-mode= buffer and trying different things that you find there.
 
-** TODO Auto Completion (=company-mode=)
+#+begin_src emacs-lisp
+  (defun sm/lsp-mode-setup ()
+    (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+    (lsp-headerline-breadcrumb-mode)
+     (let ((lsp-keymap-prefix "C-c l"))
+                    (lsp-enable-which-key-integration)))
 
-** Code Formatting
+  (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :hook
+    (lsp-mode . sm/lsp-mode-setup)
+    (python-mode . lsp)
+    :config
+    (lsp-enable-which-key-integration t)
+    (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
+#+end_src
 
-*** Editconfig
+**** lsp-ui
+
+[[https://emacs-lsp.github.io/lsp-ui/][lsp-ui]] is a set of UI enhancements built on top of =lsp-mode= which make Emacs feel even more like an IDE.  Check out the screenshots on the =lsp-ui= homepage (linked at the beginning of this paragraph) to see examples of what it can do.
+
+#+begin_src emacs-lisp
+  (use-package lsp-ui
+    :hook (lsp-mode . lsp-ui-mode)
+    :custom
+    (lsp-ui-doc-position 'bottom))
+#+end_src
+
+**** lsp-ivy
+
+[[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]] integrates Ivy with =lsp-mode= to make it easy to search for things by name in your code.  When you run these commands, a prompt will appear in the minibuffer allowing you to type part of the name of a symbol in your code. Results will be populated in the minibuffer so that you can find what you're looking for and jump to that location in the code upon selecting the result.
+
+Try these commands with =M-x=:
+
+- =lsp-ivy-workspace-symbol= - Search for a symbol name in the current project workspace
+- =lsp-ivy-global-workspace-symbol= - Search for a symbol name in all active project workspaces
+
+#+begin_src emacs-lisp
+;;  (use-package lsp-ivy)
+#+end_src
+*** Debugging with Debugger Adapter Protocol (=dap-mode=)
+#+begin_src emacs-lisp
+  (use-package dap-mode
+    :config
+    (dap-mode 1)
+    (dap-ui-mode 1)
+    (dap-tooltip-mode 1)
+    (tooltip-mode 1)
+    (dap-ui-controls-mode 1)
+    :bind
+    (:map lsp-mode-map
+          ("C-c l d" . dap-hydra)))
+#+end_src
+*** C
+**** C Language Server via =lsp-mode=
+
+#+begin_src emacs-lisp
+  (use-package c-mode
+    :straight nil
+    :after lsp-mode
+    :hook (c-mode . lsp))
+#+end_src
+
+**** C Debugger via =lldb=
+
+#+begin_src emacs-lisp
+  (use-package dap-lldb
+    :straight nil
+    :after dap-mode
+    :hook
+    (c-mode . (lambda () (require 'dap-lldb)))
+    :config
+    (setq dap-lldb-debug-program (list "lldb-vscode")))
+#+end_src
+
+*** Python
+
+**** python-language-server
+#+begin_src emacs-lisp
+(use-package lsp-python-ms
+  :init (setq lsp-python-ms-auto-install-server t)
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-python-ms)
+                          (lsp))))
+#+end_src
+
+**** pyenv version management
+
+#+begin_src emacs-lisp
+(defun sm/set-pyenv ()
+   "Set pyenv based on local .python-version file"
+   (let ((version-file (concat (projectile-project-root)
+                              (file-name-as-directory ".python-version"))))
+     (if (file-exists-p version-file)
+         (pyenv-mode-set (f-read-text version-file)))))
+
+(use-package pyenv-mode
+  :after projectile
+  :init
+  (setq pyenv-mode-mode-line-format '(:eval
+    (when (pyenv-mode-version)
+     (concat " (" (pyenv-mode-version) ") "))))
+  :hook (projectile-after-switch-project . sm/set-pyenv)
+  :config (pyenv-mode 1))
+#+end_src
+
+**** black formatter
+
+#+begin_src emacs-lisp
+  (use-package python-black
+    :demand t
+  :hook (python-mode . (lambda () (python-black-on-save-mode 1)))
+    :after python)
+#+end_src
+
+** Auto Completion (=company-mode=)
+#+begin_src emacs-lisp
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+         ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+         ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+#+end_src
+
+** Snippets (=yasnippet=)
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :config (yas-global-mode 1))
+#+end_src
+
+** Editorconfig
 
 #+begin_src emacs-lisp
 (use-package editorconfig
@@ -343,7 +487,14 @@ The [[https://github.com/Wilfred/helpful][helpful package]] makes the documentat
 
 ** Project Workspaces (=projectile=)
 
-Jump between projects, find files inside a project easily, run tests, compile and other stuff...
+Jump between projects, find files inside a project easily, run tests, compile and other stuff... It's recommend to install:
+
+- =fd= (alternative to =find=)
+- ripgrep (alternative to =grep=)
+
+as these tools are super fast.
+
+Try =C-p m= to enter the projectile commander, a helper tool to discover functionality.
 
 #+begin_src emacs-lisp
   (use-package projectile

@@ -1,6 +1,3 @@
-;; note - this is different then the $PATH variable in the shell
-(add-to-list 'exec-path "/usr/local/bin")
-
 (setq default-directory "~/")
 
 (setq sm/agenda-files (list
@@ -30,6 +27,11 @@
 ;; we will only explictly set :straight nil for system packages to avoid downloading them :)
 (setq straight-use-package-by-default t)
 
+(use-package exec-path-from-shell
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
+
 (defun kill-this-buffer ()
   (interactive)
   (kill-buffer (buffer-name)))
@@ -55,6 +57,8 @@ the beginning of the line."
   :config
   (unless (server-running-p) (server-start)))
 
+(use-package hydra)
+
 (defun copy-to-clipboard ()
   "Executes a shell command which takes the current region as stdin
   and copies it to the OS-clipboard outside of the emacs kill-ring we
@@ -77,7 +81,8 @@ the beginning of the line."
 (dolist (mode '(vterm-mode-hook
                 term-mode-hook
                 shell-mode-hook
-                eshell-mode-hook))
+                eshell-mode-hook
+                compilation-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 (use-package doom-themes
@@ -98,19 +103,23 @@ the beginning of the line."
 (use-package which-key
   :diminish which-key-mode
   :init (which-key-mode)
-  :config (setq which-key-idle-delay 0.5))
+  :config (setq which-key-idle-delay 0.1))
 
 (use-package ivy
   :diminish
   :config
-  (ivy-mode 1))
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-count-format "(%d/%d) "))
+
 
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
-	 ("C-x b" . counsel-ibuffer)
-	 ("C-x C-f" . counsel-find-file)
-	 :map minibuffer-local-map
-	 ("C-r" . 'counsel-minibuffer-history)))
+         ("C-x b" . ivy-switch-buffer)
+         ("C-x C-f" . counsel-find-file)
+         ("C-s" . swiper-isearch)
+         :map minibuffer-local-map
+         ("C-r" . 'counsel-minibuffer-history)))
 
 (use-package ivy-rich
   :diminish
@@ -194,6 +203,96 @@ the beginning of the line."
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("py" . "src python"))
 
+(defun sm/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode)
+   (let ((lsp-keymap-prefix "C-c l"))
+                  (lsp-enable-which-key-integration)))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook
+  (lsp-mode . sm/lsp-mode-setup)
+  (python-mode . lsp)
+  :config
+  (lsp-enable-which-key-integration t)
+  (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+
+;;  (use-package lsp-ivy)
+
+(use-package dap-mode
+  :config
+  (dap-mode 1)
+  (dap-ui-mode 1)
+  (dap-tooltip-mode 1)
+  (tooltip-mode 1)
+  (dap-ui-controls-mode 1)
+  :bind
+  (:map lsp-mode-map
+        ("C-c l d" . dap-hydra)))
+
+(use-package c-mode
+  :straight nil
+  :after lsp-mode
+  :hook (c-mode . lsp))
+
+(use-package dap-lldb
+  :straight nil
+  :after dap-mode
+  :hook
+  (c-mode . (lambda () (require 'dap-lldb)))
+  :config
+  (setq dap-lldb-debug-program (list "lldb-vscode")))
+
+(use-package lsp-python-ms
+  :init (setq lsp-python-ms-auto-install-server t)
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-python-ms)
+                          (lsp))))
+
+(defun sm/set-pyenv ()
+   "Set pyenv based on local .python-version file"
+   (let ((version-file (concat (projectile-project-root)
+                              (file-name-as-directory ".python-version"))))
+     (if (file-exists-p version-file)
+         (pyenv-mode-set (f-read-text version-file)))))
+
+(use-package pyenv-mode
+  :after projectile
+  :init
+  (setq pyenv-mode-mode-line-format '(:eval
+    (when (pyenv-mode-version)
+     (concat " (" (pyenv-mode-version) ") "))))
+  :hook (projectile-after-switch-project . sm/set-pyenv)
+  :config (pyenv-mode 1))
+
+(use-package python-black
+  :demand t
+:hook (python-mode . (lambda () (python-black-on-save-mode 1)))
+  :after python)
+
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+         ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+         ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+
+(use-package yasnippet
+  :config (yas-global-mode 1))
+
 (use-package editorconfig
   :config
   (editorconfig-mode 1))
@@ -231,19 +330,18 @@ the beginning of the line."
 (use-package dired
   ;; don't install this package, it is shipped with emacs
   :straight nil
+  :init (global-set-key (kbd "C-x C-d") nil)
   :bind (; global commands
-	 ("C-x C-j" . dired-jump)
-	 ; only within dired-mode
-	 :map dired-mode-map
-	 ("C-u" . dired-up-directory))
+         ("C-x C-j" . dired-jump)
+         ; only within dired-mode
+         :map dired-mode-map
+         ("C-u" . dired-up-directory))
   ;; dired shows files by running `ls` in the background
   ;; we pass these options to:
   ;; - list all files (al)
   ;; - print a slash at the end of each directory (p)
   ;; - show human readable filesize in K, M, G etc (h)
   ;; ideally, we also want to show directories first with
-  ;; --group-directories-first, though this only works on gnu ls, which is not
-  ;; natively supported on OSX
   :custom (dired-listing-switches "-alph")
   ;; enable hide details minor mode by default in dired
   ;; this hides all meta information and ony displays filennames
