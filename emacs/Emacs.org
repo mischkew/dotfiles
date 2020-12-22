@@ -11,13 +11,6 @@ This file is tangled into =init.el= everytime it is saved within Emacs Org Mode.
 
 * Paths and Global Custom Variables
 
-When emacs is launched via the GUI, our shell configured =$PATH= variable from =.zshrc= is not inherited. This might cause issues when searching for binaries installed with =homebrew= or in other user defined paths, i.e. to run dependencies of inferior mode processes or when building packages.
-
-#+begin_src emacs-lisp
-;; note - this is different then the $PATH variable in the shell
-(add-to-list 'exec-path "/usr/local/bin")
-#+end_src
-
 Use =$HOME= as the default path for finding files, i.e. with =C-x C-f=.
 
 #+begin_src emacs-lisp
@@ -66,6 +59,17 @@ We use [[https://github.com/raxod502/straight.el][straight.el]] as our package m
 #+end_src
 
 * Core Emacs Tweaks
+
+** Load $PATH from my local shell configuration
+
+When emacs is launched via the GUI, our shell configured =$PATH= variable from =.zshrc= is not inherited. This might cause issues when searching for binaries installed with =homebrew= or in other user defined paths, i.e. to run dependencies of inferior mode processes or when building packages. We explicitly load our shell configuration and copy the environment into emacs.
+
+#+begin_src emacs-lisp
+(use-package exec-path-from-shell
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
+#+end_src
 
 ** Kill current buffer
 We like to kill buffers quickly, without having to confirm to emacs. This adds a new keybinding for this custom behaviour.
