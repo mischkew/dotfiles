@@ -448,36 +448,35 @@ Jump between projects, find files inside a project easily, run tests, compile an
 ** Configuration
 
 #+begin_src emacs-lisp
-(use-package dired
-  ;; don't install this package, it is shipped with emacs
-  :straight nil
-  :bind (; global commands
-	 ("C-x C-j" . dired-jump)
-	 ; only within dired-mode
-	 :map dired-mode-map
-	 ("C-u" . dired-up-directory))
-  ;; dired shows files by running `ls` in the background
-  ;; we pass these options to:
-  ;; - list all files (al)
-  ;; - print a slash at the end of each directory (p)
-  ;; - show human readable filesize in K, M, G etc (h)
-  ;; ideally, we also want to show directories first with
-  ;; --group-directories-first, though this only works on gnu ls, which is not
-  ;; natively supported on OSX
-  :custom (dired-listing-switches "-alph")
-  ;; enable hide details minor mode by default in dired
-  ;; this hides all meta information and ony displays filennames
-  :hook (dired-mode . dired-hide-details-mode))
+  (use-package dired
+    ;; don't install this package, it is shipped with emacs
+    :straight nil
+    :init (global-set-key (kbd "C-x C-d") nil)
+    :bind (; global commands
+           ("C-x C-j" . dired-jump)
+           ; only within dired-mode
+           :map dired-mode-map
+           ("C-u" . dired-up-directory))
+    ;; dired shows files by running `ls` in the background
+    ;; we pass these options to:
+    ;; - list all files (al)
+    ;; - print a slash at the end of each directory (p)
+    ;; - show human readable filesize in K, M, G etc (h)
+    ;; ideally, we also want to show directories first with
+    :custom (dired-listing-switches "-alph")
+    ;; enable hide details minor mode by default in dired
+    ;; this hides all meta information and ony displays filennames
+    :hook (dired-mode . dired-hide-details-mode))
 
-;; dired normally launches a new buffer for each folder opened
-;; this clutters the buffer list, we only want to keep a single
-;; dired buffer around
-(use-package dired-single)
+  ;; dired normally launches a new buffer for each folder opened
+  ;; this clutters the buffer list, we only want to keep a single
+  ;; dired buffer around
+  (use-package dired-single)
 
-;; show icon thumbnails next to files
-(use-package all-the-icons-dired
-  ;; automatically activate this minor mode when in dired-mode
-  :hook (dired-mode . all-the-icons-dired-mode))
+  ;; show icon thumbnails next to files
+  (use-package all-the-icons-dired
+    ;; automatically activate this minor mode when in dired-mode
+    :hook (dired-mode . all-the-icons-dired-mode))
 #+end_src
 
 * Credits
