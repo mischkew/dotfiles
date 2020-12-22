@@ -188,27 +188,33 @@ When hitting prefixes, Emacs will now show us a list of possible keybinding comp
 (use-package which-key
   :diminish which-key-mode
   :init (which-key-mode)
-  :config (setq which-key-idle-delay 0.5))
+  :config (setq which-key-idle-delay 0.1))
 #+end_src
 
-** Selection Menus (=ivy= and =counsel=)
+** Selection Menus (=ivy=, =counsel= and =swiper=)
+
+Useful docs are available [[http://oremacs.com/swiper/][here]].
 
 #+begin_src emacs-lisp
-(use-package ivy
-  :diminish
-  :config
-  (ivy-mode 1))
+  (use-package ivy
+    :diminish
+    :config
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-count-format "(%d/%d) "))
 
-(use-package counsel
-  :bind (("M-x" . counsel-M-x)
-	 ("C-x b" . counsel-ibuffer)
-	 ("C-x C-f" . counsel-find-file)
-	 :map minibuffer-local-map
-	 ("C-r" . 'counsel-minibuffer-history)))
 
-(use-package ivy-rich
-  :diminish
-  :init (ivy-rich-mode 1))
+  (use-package counsel
+    :bind (("M-x" . counsel-M-x)
+           ("C-x b" . ivy-switch-buffer)
+           ("C-x C-f" . counsel-find-file)
+           ("C-s" . swiper-isearch)
+           :map minibuffer-local-map
+           ("C-r" . 'counsel-minibuffer-history)))
+
+  (use-package ivy-rich
+    :diminish
+    :init (ivy-rich-mode 1))
 #+end_src
 
 ** Better Emacs Documentation (=helpful=)
@@ -226,7 +232,6 @@ The [[https://github.com/Wilfred/helpful][helpful package]] makes the documentat
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
 #+end_src
-
 
 * Org Mode
 
