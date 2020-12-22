@@ -30,3 +30,6 @@ if [ "$PLATFORM" = "Linux" ]; then
     # Copy to clipboard with the same command as on OSX.
     alias pbcopy="xclip -sel clip"
 fi
+
+# List directory size of all folders on the current level
+alias disk-usage="du -h -s *"
