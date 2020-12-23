@@ -1,0 +1,45 @@
+# -*- mode: snippet -*-
+# name: Advent of Code 2020 - Template
+# key: Advent
+# --
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/_types/_size_t.h>
+
+#include "utils.h"
+
+#define TEST_INPUT "./inputs/day$1-test.txt"
+#define INPUT "./inputs/day$1.txt"
+
+int part1(size_t numLines, const char *lines[numLines]) {
+  printf("Part 1: %d\n", 0);
+  return 0;
+}
+
+int part2(size_t numLines, const char *lines[numLines]) {
+  printf("Part 2: %d\n", 0);
+  return 0;
+}
+
+int runForInput(const char *filename) {
+  size_t numEntries;
+  char **lines = readLines(filename, &numEntries);
+  if (lines == NULL) {
+    perror("Reading input failed");
+    return 1;
+  }
+  printf("Number of entries for %s: %zu\n", filename, numEntries);
+
+  part1(numEntries, (const char **)lines);
+  part2(numEntries, (const char **)lines);
+
+  freeLines(numEntries, lines);
+  return 0;
+}
+
+int main(int argc, char *argv[argc]) {
+  return runForInput(TEST_INPUT) == 0 && runForInput(INPUT) == 0;
+}
+
