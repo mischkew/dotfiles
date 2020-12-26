@@ -57,6 +57,9 @@ compinit -C # create a dump file if none exists
 # Load zsh modules of modules inside this dotfile repository
 #
 
-find "$DOTFILES" -follow -name "*.zsh" -not -path "*/zsh/*" -maxdepth 2 | while read -r module; do
+# we load brew before anything else as it is a requirement for most
+# other plugins
+source "$DOTFILES/brew/path.zsh"
+find "$DOTFILES" -maxdepth 2 -follow -name "*.zsh" -not -path "*/zsh/*" -not -path "*/brew/*" | while read -r module; do
   source "$module"
 done
