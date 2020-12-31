@@ -39,5 +39,10 @@ int runForInput(const char *filename) {
 }
 
 int main(int argc, char *argv[argc]) {
-  return runForInput(TEST_INPUT) == 0 && runForInput(INPUT) == 0;
+  bool success = runForInput(TEST_INPUT) == 0 && runForInput(INPUT) == 0;
+  if (success) {
+    return 0;
+  } else {
+    return 1;
+  }
 }
