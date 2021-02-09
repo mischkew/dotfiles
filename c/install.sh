@@ -16,15 +16,17 @@ if [ "$PLATFORM" = "Darwin" ]; then
   fi
 elif [ "$PLATFORM" = "Linux" ]; then
   info 'installing and building llvm'
+  sudo apt install libedit-dev
   WORKING_DIR="$(realpath "$(dirname "$0")")"
   cd "$WORKING_DIR"
   git submodule update --init "./llvm-project"
   mkdir -p ./llvm-project/build
   cd ./llvm-project/build
   cmake ../llvm -G "Unix Makefiles" \
-        -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lldb" \
+        -DLLVM_ENABLE_PROJECTS="all" \
         -DCMAKE_BUILD_TYPE="Release" \
         -DCMAKE_INSTALL_PREFIX="$WORKING_DIR" \
+        -DLLDB_ENABLE_LIBEDIT="On" \
     && make -j 8 \
     && make install
 
