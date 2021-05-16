@@ -18,6 +18,7 @@ build/
 /emacs/recentf
 /emacs/.dap-breakpoints
 /emacs/.lsp-session-*
+/emacs/eln-cache
 
 
 # ignore GitHub API key
