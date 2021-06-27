@@ -263,7 +263,8 @@ the beginning of the line."
 (use-package clang-format
   :demand t
   :init
-  (add-hook 'c-mode-hook 'sm/clang-format-on-save))
+  (add-hook 'c-mode-common-hook 'sm/clang-format-on-save))
+
 
 (defun sm/set-pyenv ()
    "Set pyenv based on local .python-version file"

@@ -417,16 +417,16 @@ Try these commands with =M-x=:
 **** CLang Format
 
 #+begin_src emacs-lisp
-    (defun sm/clang-format ()
-      (clang-format-buffer "llvm"))
+      (defun sm/clang-format ()
+        (clang-format-buffer "llvm"))
 
-    (defun sm/clang-format-on-save ()
-      (add-hook 'before-save-hook #'sm/clang-format nil 'local))
+      (defun sm/clang-format-on-save ()
+        (add-hook 'before-save-hook #'sm/clang-format nil 'local))
 
-    (use-package clang-format
-      :demand t
-      :init
-      (add-hook 'c-mode-hook 'sm/clang-format-on-save))
+      (use-package clang-format
+        :demand t
+        :init
+        (add-hook 'c-mode-common-hook 'sm/clang-format-on-save))
 #+end_src
 
 *** Python
