@@ -254,6 +254,16 @@ the beginning of the line."
   :hook (python-mode . (lambda ()
                           (require 'lsp-python-ms)
                           (lsp))))
+(defun sm/clang-format ()
+  (clang-format-buffer "llvm"))
+
+(defun sm/clang-format-on-save ()
+  (add-hook 'before-save-hook #'sm/clang-format nil 'local))
+
+(use-package clang-format
+  :demand t
+  :init
+  (add-hook 'c-mode-hook 'sm/clang-format-on-save))
 
 (defun sm/set-pyenv ()
    "Set pyenv based on local .python-version file"
