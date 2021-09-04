@@ -279,32 +279,12 @@ The [[https://github.com/Wilfred/helpful][helpful package]] makes the documentat
     ("e" tags-todo "+TODO=\"NEXT\"+Effort<=1&+Effort>0"
      ((org-agenda-overriding-header "Low Effort Tasks")
       (org-agenda-max-todos 20)
-      (org-agenda-files org-agenda-files)))
-
-    ("w" "Workflow Status"
-      (todo "BACKLOG"
-            ((org-agenda-overriding-header "Project Backlog")
-             (org-agenda-todo-list-sublevels nil)
-             (org-agenda-files org-agenda-files)))
-      (todo "WIP"
-            ((org-agenda-overriding-header "Active Projects")
-             (org-agenda-files org-agenda-files)))
-      (todo "HOLD"
-            ((org-agenda-overriding-header "On Hold")
-             (org-agenda-files org-agenda-files)))
-      (todo "COMPLETED"
-            ((org-agenda-overriding-header "Completed Projects")
-             (org-agenda-files org-agenda-files))))))
-
+      (org-agenda-files org-agenda-files)))))
 
   :bind
   ("C-c a" . 'org-agenda)
   ("C-a" . 'smarter-move-beginning-of-line))
 #+end_src
-
-** Babel Languages
-
-
 
 ** Automatically Tangle
 
