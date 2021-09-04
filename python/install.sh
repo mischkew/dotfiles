@@ -32,3 +32,11 @@ if command -v pyenv >/dev/null 2>&1; then
 else
   brew install pyenv pyenv-virtualenv
 fi
+
+if command -v pipx >/dev/null 2>&1; then
+  info 'pipx is already installed'
+else
+  brew install pipx
+  pipx ensurepath
+  pipx install jedi-language-server
+fi
