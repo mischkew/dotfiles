@@ -27,6 +27,9 @@
 ;; we will only explictly set :straight nil for system packages to avoid downloading them :)
 (setq straight-use-package-by-default t)
 
+;; hard-wrap at 80 characters using M-q
+(setq-default fill-column 80)
+
 (use-package exec-path-from-shell
   :config
   (when (memq window-system '(mac ns x))
@@ -166,23 +169,7 @@ the beginning of the line."
     ("e" tags-todo "+TODO=\"NEXT\"+Effort<=1&+Effort>0"
      ((org-agenda-overriding-header "Low Effort Tasks")
       (org-agenda-max-todos 20)
-      (org-agenda-files org-agenda-files)))
-
-    ("w" "Workflow Status"
-      (todo "BACKLOG"
-            ((org-agenda-overriding-header "Project Backlog")
-             (org-agenda-todo-list-sublevels nil)
-             (org-agenda-files org-agenda-files)))
-      (todo "WIP"
-            ((org-agenda-overriding-header "Active Projects")
-             (org-agenda-files org-agenda-files)))
-      (todo "HOLD"
-            ((org-agenda-overriding-header "On Hold")
-             (org-agenda-files org-agenda-files)))
-      (todo "COMPLETED"
-            ((org-agenda-overriding-header "Completed Projects")
-             (org-agenda-files org-agenda-files))))))
-
+      (org-agenda-files org-agenda-files)))))
 
   :bind
   ("C-c a" . 'org-agenda)
@@ -213,17 +200,16 @@ the beginning of the line."
   :commands (lsp lsp-deferred)
   :hook
   (lsp-mode . sm/lsp-mode-setup)
-  (python-mode . lsp)
   :config
   (lsp-enable-which-key-integration t)
   (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
 
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-position 'bottom))
+;; (use-package lsp-ui
+;;   :hook (lsp-mode . lsp-ui-mode)
+;;   :custom
+;;   (lsp-ui-doc-position 'bottom))
 
-;;  (use-package lsp-ivy)
+(use-package lsp-ivy)
 
 (use-package dap-mode
   :config
@@ -236,10 +222,10 @@ the beginning of the line."
   (:map lsp-mode-map
         ("C-c l d" . dap-hydra)))
 
-(use-package c-mode
+(use-package c-mode-common
   :straight nil
   :after lsp-mode
-  :hook (c-mode . lsp))
+  :hook (c-mode-common . lsp))
 
 (use-package dap-lldb
   :straight nil
@@ -249,11 +235,6 @@ the beginning of the line."
   :config
   (setq dap-lldb-debug-program (list "lldb-vscode")))
 
-(use-package lsp-python-ms
-  :init (setq lsp-python-ms-auto-install-server t)
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-python-ms)
-                          (lsp))))
 (defun sm/clang-format ()
   (clang-format-buffer "llvm"))
 
@@ -265,6 +246,12 @@ the beginning of the line."
   :init
   (add-hook 'c-mode-common-hook 'sm/clang-format-on-save))
 
+;; (use-package lsp-jedi
+;;   :ensure t
+;;   :config
+;;   (with-eval-after-load "lsp-mode"
+;;     (add-to-list 'lsp-disabled-clients 'pyls)
+;;     (add-to-list 'lsp-enabled-clients 'jedi)))
 
 (defun sm/set-pyenv ()
    "Set pyenv based on local .python-version file"
@@ -284,25 +271,27 @@ the beginning of the line."
 
 (use-package python-black
   :demand t
-:hook (python-mode . (lambda () (python-black-on-save-mode 1)))
+  :hook (python-mode . (lambda () (python-black-on-save-mode 1)))
   :after python)
 
-(use-package company
-  :after lsp-mode
-  :hook (lsp-mode . company-mode)
-  :bind (:map company-active-map
-         ("<tab>" . company-complete-selection))
-        (:map lsp-mode-map
-         ("<tab>" . company-indent-or-complete-common))
-  :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.0))
+(use-package yaml-mode)
 
-(use-package company-box
-  :hook (company-mode . company-box-mode))
+;; (use-package company
+;;   :after lsp-mode
+;;   :hook (lsp-mode . company-mode)
+;;   :bind (:map company-active-map
+;;          ("<tab>" . company-complete-selection))
+;;         (:map lsp-mode-map
+;;          ("<tab>" . company-indent-or-complete-common))
+;;   :custom
+;;   (company-minimum-prefix-length 1)
+;;   (company-idle-delay 0.0))
 
-(use-package yasnippet
-  :config (yas-global-mode 1))
+;; (use-package company-box
+;;   :hook (company-mode . company-box-mode))
+
+;; (use-package yasnippet
+;;  :config (yas-global-mode 1))
 
 (use-package editorconfig
   :config
@@ -330,7 +319,7 @@ the beginning of the line."
 ;; NOTE: Make sure to configure a GitHub token before using this package!
 ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
 ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
-(use-package forge)
+;; (use-package forge)
 
 (use-package vterm
   :bind ("C-M-t" . vterm)

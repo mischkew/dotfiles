@@ -62,6 +62,13 @@ We use [[https://github.com/raxod502/straight.el][straight.el]] as our package m
 
 * Core Emacs Tweaks
 
+** Configuration for default commands/ navigation
+
+#+begin_src emacs-lisp
+;; hard-wrap at 80 characters using M-q
+(setq-default fill-column 80)
+#+end_src
+
 ** Load $PATH from my local shell configuration
 
 When emacs is launched via the GUI, our shell configured =$PATH= variable from =.zshrc= is not inherited. This might cause issues when searching for binaries installed with =homebrew= or in other user defined paths, i.e. to run dependencies of inferior mode processes or when building packages. We explicitly load our shell configuration and copy the environment into emacs.
@@ -330,7 +337,6 @@ The =lsp-keymap-prefix= setting enables you to define a prefix for where =lsp-mo
     :commands (lsp lsp-deferred)
     :hook
     (lsp-mode . sm/lsp-mode-setup)
-    (python-mode . lsp)
     :config
     (lsp-enable-which-key-integration t)
     (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
@@ -341,10 +347,10 @@ The =lsp-keymap-prefix= setting enables you to define a prefix for where =lsp-mo
 [[https://emacs-lsp.github.io/lsp-ui/][lsp-ui]] is a set of UI enhancements built on top of =lsp-mode= which make Emacs feel even more like an IDE.  Check out the screenshots on the =lsp-ui= homepage (linked at the beginning of this paragraph) to see examples of what it can do.
 
 #+begin_src emacs-lisp
-  (use-package lsp-ui
-    :hook (lsp-mode . lsp-ui-mode)
-    :custom
-    (lsp-ui-doc-position 'bottom))
+  ;; (use-package lsp-ui
+  ;;   :hook (lsp-mode . lsp-ui-mode)
+  ;;   :custom
+  ;;   (lsp-ui-doc-position 'bottom))
 #+end_src
 
 **** lsp-ivy
@@ -357,8 +363,9 @@ Try these commands with =M-x=:
 - =lsp-ivy-global-workspace-symbol= - Search for a symbol name in all active project workspaces
 
 #+begin_src emacs-lisp
-;;  (use-package lsp-ivy)
+  (use-package lsp-ivy)
 #+end_src
+
 *** Debugging with Debugger Adapter Protocol (=dap-mode=)
 #+begin_src emacs-lisp
   (use-package dap-mode
@@ -376,10 +383,10 @@ Try these commands with =M-x=:
 **** C Language Server via =lsp-mode=
 
 #+begin_src emacs-lisp
-  (use-package c-mode
+  (use-package c-mode-common
     :straight nil
     :after lsp-mode
-    :hook (c-mode . lsp))
+    :hook (c-mode-common . lsp))
 #+end_src
 
 **** C Debugger via =lldb=
@@ -413,11 +420,12 @@ Try these commands with =M-x=:
 
 **** python-language-server
 #+begin_src emacs-lisp
-(use-package lsp-python-ms
-  :init (setq lsp-python-ms-auto-install-server t)
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-python-ms)
-                          (lsp))))
+  ;; (use-package lsp-jedi
+  ;;   :ensure t
+  ;;   :config
+  ;;   (with-eval-after-load "lsp-mode"
+  ;;     (add-to-list 'lsp-disabled-clients 'pyls)
+  ;;     (add-to-list 'lsp-enabled-clients 'jedi)))
 #+end_src
 
 **** pyenv version management
@@ -445,31 +453,36 @@ Try these commands with =M-x=:
 #+begin_src emacs-lisp
   (use-package python-black
     :demand t
-  :hook (python-mode . (lambda () (python-black-on-save-mode 1)))
+    :hook (python-mode . (lambda () (python-black-on-save-mode 1)))
     :after python)
+#+end_src
+
+*** Yaml
+#+begin_src emacs-lisp
+(use-package yaml-mode)
 #+end_src
 
 ** Auto Completion (=company-mode=)
 #+begin_src emacs-lisp
-(use-package company
-  :after lsp-mode
-  :hook (lsp-mode . company-mode)
-  :bind (:map company-active-map
-         ("<tab>" . company-complete-selection))
-        (:map lsp-mode-map
-         ("<tab>" . company-indent-or-complete-common))
-  :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.0))
+  ;; (use-package company
+  ;;   :after lsp-mode
+  ;;   :hook (lsp-mode . company-mode)
+  ;;   :bind (:map company-active-map
+  ;;          ("<tab>" . company-complete-selection))
+  ;;         (:map lsp-mode-map
+  ;;          ("<tab>" . company-indent-or-complete-common))
+  ;;   :custom
+  ;;   (company-minimum-prefix-length 1)
+  ;;   (company-idle-delay 0.0))
 
-(use-package company-box
-  :hook (company-mode . company-box-mode))
+  ;; (use-package company-box
+  ;;   :hook (company-mode . company-box-mode))
 #+end_src
 
 ** Snippets (=yasnippet=)
 #+begin_src emacs-lisp
-  (use-package yasnippet
-    :config (yas-global-mode 1))
+  ;; (use-package yasnippet
+  ;;  :config (yas-global-mode 1))
 #+end_src
 
 ** Editorconfig
@@ -519,7 +532,7 @@ Try =C-p m= to enter the projectile commander, a helper tool to discover functio
 ;; NOTE: Make sure to configure a GitHub token before using this package!
 ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
 ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
-(use-package forge)
+;; (use-package forge)
 #+end_src
 
 * Terminal (=vterm=)
