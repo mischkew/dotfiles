@@ -15,9 +15,7 @@ alias ec="emacsclient --tty"
 # Edit .zshrc in the standard editor
 alias zshconfig="$EDITOR $HOME/.zshrc"
 
-# List all ports which are currently listening to applications, useful
-# to debug if ports are blocked.
-alias ls-ports="netstat -ltnp"
+
 
 # Use ffmpeg to watch a video from the command line.
 alias watch="ffplay -i"
@@ -29,6 +27,14 @@ if [ "$PLATFORM" = "Linux" ]; then
 
     # Copy to clipboard with the same command as on OSX.
     alias pbcopy="xclip -sel clip"
+
+    # List all ports which are currently listening to applications, useful
+    # to debug if ports are blocked.
+    alias ls-ports="netstat -ltnp"
+elif [ "$PLATFORM" = "Darwin" ]; then
+    # List all ports which are currently listening to applications, useful
+    # to debug if ports are blocked.
+    alias ls-ports="lsof -i -P | grep -i \"listen\""
 fi
 
 # List directory size of all folders on the current level
