@@ -18,12 +18,23 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$CUDA_PATH/libnvvp
 
 if [ "$PLATFORM" = "Darwin" ]; then
   export DYLD_LIBRARY_PATH=.:$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH
+
+  # add android sdk and ndk
+  export ANDROID_HOME="/Users/sven/Library/Android/sdk"
+  export ANDROID_NDK="${ANDROID_HOME}/ndk/21.4.7075529"
+  export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_NDK}"
+
+  export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
+
+  if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then
+    source "$HOME/google-cloud-sdk/path.zsh.inc"
+  fi
+
+  if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then
+    source "$HOME/google-cloud-sdk/completion.zsh.inc"
+  fi
 fi
 
-# add android sdk and ndk
-export PATH=${PATH}:/usr/local/opt/android-ndk-r16b/
-export PATH=${PATH}:/usr/local/opt/android-studio/bin/
-export PATH=${PATH}:/home/sven/Android/Sdk/platform-tools/
 
 if [ "$PLATFORM" = "Linux" ]; then
   # glib modules
