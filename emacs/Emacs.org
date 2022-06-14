@@ -148,6 +148,15 @@ When running emacs from a tty, it is difficult to get the current selection into
 (global-set-key (kbd "C-c C-r") 'copy-to-clipboard)
 #+end_src
 
+** Region Folding
+
+A small plugin, =fold-this= to hide a selected region. [[https://github.com/magnars/fold-this.el][See on GitHub.]]
+
+#+begin_src emacs-lisp
+    (use-package fold-this
+      :bind ("C-;" . fold-this))
+#+end_src
+
 * UI
 
 ** Basics
