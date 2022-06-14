@@ -1,10 +1,5 @@
+# General Hosts
 Host *
-    UseKeychain yes
-
-    # reuse existing sockets to speed up connections, e.g. with emacs remote
-    # editing
-    ControlMaster auto
-    ControlPath ~/.ssh/sockets/%r@%h-%p
-    ControlPersist 600
-
-
+ AddKeysToAgent yes
+ UseKeychain yes
+ IdentityFile ~/.ssh/id_rsa
