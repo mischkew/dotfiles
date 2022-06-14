@@ -431,7 +431,7 @@ Try these commands with =M-x=:
 
 #+begin_src emacs-lisp
       (defun sm/clang-format ()
-        (clang-format-buffer "llvm"))
+        (clang-format-buffer "file"))
 
       (defun sm/clang-format-on-save ()
         (add-hook 'before-save-hook #'sm/clang-format nil 'local))
