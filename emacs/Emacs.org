@@ -65,8 +65,11 @@ We use [[https://github.com/raxod502/straight.el][straight.el]] as our package m
 ** Configuration for default commands/ navigation
 
 #+begin_src emacs-lisp
-;; hard-wrap at 80 characters using M-q
-(setq-default fill-column 80)
+  ;; hard-wrap at 80 characters using M-q
+  (setq-default fill-column 80)
+
+  ;; re-load buffers if they changed on disk
+  (global-auto-revert-mode t)
 #+end_src
 
 ** Load $PATH from my local shell configuration
