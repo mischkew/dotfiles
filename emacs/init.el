@@ -30,6 +30,9 @@
 ;; hard-wrap at 80 characters using M-q
 (setq-default fill-column 80)
 
+;; re-load buffers if they changed on disk
+(global-auto-revert-mode t)
+
 (use-package exec-path-from-shell
   :config
   (when (memq window-system '(mac ns x))
@@ -70,6 +73,9 @@ the beginning of the line."
   (shell-command-on-region (point) (mark) "pbcopy"))
 
 (global-set-key (kbd "C-c C-r") 'copy-to-clipboard)
+
+(use-package fold-this
+  :bind ("C-;" . fold-this))
 
 (setq inhibit-startup-message t) ; don't show the emacs startup screen
 (scroll-bar-mode -1) ; disable visible scrollbar
@@ -139,41 +145,55 @@ the beginning of the line."
   ([remap describe-key] . helpful-key))
 
 (defun sm/org-hooks ()
-  (org-indent-mode)
-  (visual-line-mode 1))
+    (org-indent-mode)
+    (visual-line-mode 1))
 
-(use-package org
-  :hook (org-mode . sm/org-hooks)
-  :config
-  (setq org-todo-keywords
-	'((sequence "TODO" "NEXT" "|" "DONE")
-	  (sequence "WAIT" "PLAN" "BACKLOG" "WIP" "HOLD" "|" "COMPLETED")))
-  (setq org-agenda-files sm/agenda-files)
+(defun sm/formatted-copy ()
+  "Export region to HTML, and copy it to the clipboard. See: https://kitchingroup.cheme.cmu.edu/blog/2016/06/16/Copy-formatted-org-mode-text-from-Emacs-to-other-applications/"
+  (interactive)
+  (save-window-excursion
+    (let* ((buf (org-export-to-buffer 'html "*Formatted Copy*" nil nil t t))
+           (html (with-current-buffer buf (buffer-string))))
+      (with-current-buffer buf
+        (shell-command-on-region
+         (point-min)
+         (point-max)
+         "textutil -stdin -format html -convert rtf -stdout | pbcopy"))
+      (kill-buffer buf))))
 
-  (setq org-agenda-start-with-log-mode t)
-  (setq org-log-done 'time)
-  (setq org-log-into-drawer t)
+  (use-package org
+    :hook (org-mode . sm/org-hooks)
+    :config
+    (setq org-todo-keywords
+          '((sequence "TODO" "NEXT" "|" "DONE")
+            (sequence "WAIT" "PLAN" "BACKLOG" "WIP" "HOLD" "|" "COMPLETED")))
+    (setq org-agenda-files sm/agenda-files)
 
-  ;; configure custom agenda views
-  (setq org-agenda-custom-commands
-   '(("d" "Dashboard"
-     ((agenda "" ((org-deadline-warning-days 7)))
-      (todo "NEXT"
-        ((org-agenda-overriding-header "Next Tasks")))))
+    (setq org-agenda-start-with-log-mode t)
+    (setq org-log-done 'time)
+    (setq org-log-into-drawer t)
 
-    ("n" "Next Tasks"
-     ((todo "NEXT"
-        ((org-agenda-overriding-header "Next Tasks")))))
+    ;; configure custom agenda views
+    (setq org-agenda-custom-commands
+     '(("d" "Dashboard"
+       ((agenda "" ((org-deadline-warning-days 7)))
+        (todo "NEXT"
+          ((org-agenda-overriding-header "Next Tasks")))))
 
-    ;; Low-effort next actions
-    ("e" tags-todo "+TODO=\"NEXT\"+Effort<=1&+Effort>0"
-     ((org-agenda-overriding-header "Low Effort Tasks")
-      (org-agenda-max-todos 20)
-      (org-agenda-files org-agenda-files)))))
+      ("n" "Next Tasks"
+       ((todo "NEXT"
+          ((org-agenda-overriding-header "Next Tasks")))))
 
-  :bind
-  ("C-c a" . 'org-agenda)
-  ("C-a" . 'smarter-move-beginning-of-line))
+      ;; Low-effort next actions
+      ("e" tags-todo "+TODO=\"NEXT\"+Effort<=1&+Effort>0"
+       ((org-agenda-overriding-header "Low Effort Tasks")
+        (org-agenda-max-todos 20)
+        (org-agenda-files org-agenda-files)))))
+
+    :bind
+    ("C-c a" . 'org-agenda)
+    ("C-a" . 'smarter-move-beginning-of-line)
+    ("C-c w" . 'sm/formatted-copy))
 
 (defun sm/org-babel-tangle-config ()
   (when (string-equal (file-truename (file-name-directory (buffer-file-name)))
@@ -236,7 +256,7 @@ the beginning of the line."
   (setq dap-lldb-debug-program (list "lldb-vscode")))
 
 (defun sm/clang-format ()
-  (clang-format-buffer "llvm"))
+  (clang-format-buffer "file"))
 
 (defun sm/clang-format-on-save ()
   (add-hook 'before-save-hook #'sm/clang-format nil 'local))
@@ -276,19 +296,19 @@ the beginning of the line."
 
 (use-package yaml-mode)
 
-;; (use-package company
-;;   :after lsp-mode
-;;   :hook (lsp-mode . company-mode)
-;;   :bind (:map company-active-map
-;;          ("<tab>" . company-complete-selection))
-;;         (:map lsp-mode-map
-;;          ("<tab>" . company-indent-or-complete-common))
-;;   :custom
-;;   (company-minimum-prefix-length 1)
-;;   (company-idle-delay 0.0))
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+         ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+         ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
 
-;; (use-package company-box
-;;   :hook (company-mode . company-box-mode))
+(use-package company-box
+  :hook (company-mode . company-box-mode))
 
 ;; (use-package yasnippet
 ;;  :config (yas-global-mode 1))
