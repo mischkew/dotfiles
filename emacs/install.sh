@@ -19,7 +19,8 @@ elif ! command -v brew >/dev/null 2>&1; then
   fail 'brew is not installed, cannot install emacs'
   return 1
 elif [ "$PLATFORM" = "Darwin" ]; then
-  brew cask install emacs
+  brew install emacs --cask
+  brew install ispell
 elif [ "$PLATFORM" = "Linux" ]; then
   brew install emacs
 else

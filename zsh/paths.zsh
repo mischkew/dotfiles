@@ -24,6 +24,9 @@ if [ "$PLATFORM" = "Darwin" ]; then
   export ANDROID_NDK="${ANDROID_HOME}/ndk/21.4.7075529"
   export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_NDK}"
 
+  # use the JRE of Android Studio
+  export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home/"
+
   export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
 
   if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then
@@ -33,6 +36,13 @@ if [ "$PLATFORM" = "Darwin" ]; then
   if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then
     source "$HOME/google-cloud-sdk/completion.zsh.inc"
   fi
+
+  # make postgres client available in the path
+  export PATH="/opt/homebrew/opt/libpq/bin:${PATH}"
+
+  # nvm
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && source "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
 fi
 
 

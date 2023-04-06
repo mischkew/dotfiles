@@ -10,7 +10,7 @@ install_osx_packages() {
 
     # Keyboard Shortcuts for the OSX window manager
     # https://github.com/rxhanson/Rectangle
-    brew cask install rectangle
+    brew install rectangle --cask
 
     user "Make sure to set Rectangle to launch automatically on boot"
     user "Make sure to set the accessibility rights for Rectangle!"

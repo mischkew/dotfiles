@@ -6,6 +6,12 @@
 
 (setq sm/workspace-path "~/Documents/workspace")
 
+(setq backup-directory-alist `(("." . "~/.emacs-saves")))
+
+(setq create-lockfiles nil)
+
+(setq ring-bell-function 'ignore)
+
 ;; install straight with straight and only bootstrap once
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -245,7 +251,10 @@ the beginning of the line."
 (use-package c-mode-common
   :straight nil
   :after lsp-mode
-  :hook (c-mode-common . lsp))
+  :hook (c-mode-common . lsp)
+  :config
+  (setq c-default-style "k&r")
+  (setq c-basic-offset 2))
 
 (use-package dap-lldb
   :straight nil
@@ -265,6 +274,10 @@ the beginning of the line."
   :demand t
   :init
   (add-hook 'c-mode-common-hook 'sm/clang-format-on-save))
+
+(use-package python
+  :after company
+  :hook (python-mode . company-mode))
 
 ;; (use-package lsp-jedi
 ;;   :ensure t
@@ -296,22 +309,37 @@ the beginning of the line."
 
 (use-package yaml-mode)
 
+(setq js-indent-level 2)
+
+(use-package web-mode
+  :config
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-css-indent-offset 2)
+    (setq web-mode-code-indent-offset 2))
+
 (use-package company
-  :after lsp-mode
-  :hook (lsp-mode . company-mode)
-  :bind (:map company-active-map
-         ("<tab>" . company-complete-selection))
-        (:map lsp-mode-map
-         ("<tab>" . company-indent-or-complete-common))
+  :bind
+  ((:map company-mode-map ("<tab>" . company-indent-or-complete-common))
+   (:map company-active-map ("<tab>" . company-complete-common-or-cycle)))
+  :hook (prog-mode-hook . company-mode)
   :custom
   (company-minimum-prefix-length 1)
-  (company-idle-delay 0.0))
+  (company-idle-delay 0.0)
+  (company-files-exclusions '(".git/" ".DS_Store"))
+  (company-backends
+   '((company-capf company-dabbrev-code)
+     company-files)))
 
-(use-package company-box
-  :hook (company-mode . company-box-mode))
-
-;; (use-package yasnippet
-;;  :config (yas-global-mode 1))
+;; (use-package copilot
+;;   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+;;   :hook (prog-mode-hook . copilot-mode)
+;;   :bind (:map copilot-mode-map
+;;               ("C-<tab>" . copilot-complete)
+;;          :map copilot-completion-map
+;;          ("C-<tab>" . copilot-next-completion)
+;;          ("<tab>" . copilot-accept-completion)
+;;          ("<return>" . copilot-accept-completion)
+;;          ("C-G" . copilot-clear-overlay)))
 
 (use-package editorconfig
   :config
@@ -338,14 +366,21 @@ the beginning of the line."
 
 ;; NOTE: Make sure to configure a GitHub token before using this package!
 ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
-;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
-;; (use-package forge)
+;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Startedhttps://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
+;; (use-package forge
+;;   :after magit)
 
 (use-package vterm
   :bind ("C-M-t" . vterm)
   :config
   (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
   (setq vterm-max-scrollback 10000))
+
+(use-package multiple-cursors
+  :bind (
+         ("C-s-c" . mc/edit-lines)
+         ("C-s-f" . mc/mark-next-like-this-word)
+         ("C-s-b" . mc/mark-previous-like-this-word)))
 
 (use-package dired
   ;; don't install this package, it is shipped with emacs

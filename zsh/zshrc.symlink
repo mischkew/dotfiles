@@ -63,3 +63,6 @@ source "$DOTFILES/brew/path.zsh"
 find "$DOTFILES" -maxdepth 2 -follow -name "*.zsh" -not -path "*/zsh/*" -not -path "*/brew/*" | while read -r module; do
   source "$module"
 done
+
+# Created by `pipx` on 2022-06-17 09:12:23
+export PATH="$PATH:/Users/sven/.local/bin"
